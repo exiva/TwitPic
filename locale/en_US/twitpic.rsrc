@@ -1,0 +1,404 @@
+﻿package "net.exiva.twitpic"
+
+interface "{source}net/exiva/twitpic/Resources.java"
+events "{source}net/exiva/twitpic/Commands.java"
+
+#
+## Application Strings
+#
+string ID_APP_NAME "TwitPic"
+@ IF {screen} = wqvga
+string ID_CHOOSER_CATEGORY "community-apps"
+@ ELSEIF {screen} = qvga
+string ID_CHOOSER_CATEGORY "services"
+@ ENDIF
+string ID_APP_CLASS "net.exiva.twitpic.twitpic"
+string ID_VERSION "v@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@/@APP_VERSION_BUILD@"
+string ID_LOCALE "en_US"
+string ID_APP_FLAGS "L"
+
+#
+## Text Strings
+#
+string kRsrc_SubTitle "Share photos on Twitter"
+string kRsrc_AppTitle "TwitPic"
+string kRsrc_PhotoButton "Take Photo"
+string kRsrc_lastPost "View Last Post"
+@ IF {screen} = wqvga
+string kRsrc_bodyText "Type your update message (Max 140 characters)"
+@ ELSEIF {screen} = qvga
+string kRsrc_bodyText "Type your update message"
+@ ENDIF
+string kRsrc_postButton "Post It"
+string kRsrc_menuLogin "Setup Login"
+string kRsrc_menuPhoto "Take Photo"
+string kRsrc_menuPost "Post It"
+string kRsrc_menuAbout "About TwitPic"
+string kRsrc_setupSignUp "Sign Up"
+string kRsrc_login "Login"
+string kRsrc_cancel "Cancel"
+string kRsrc_loginName "Username"
+string kRsrc_password "Password"
+string kRsrc_aboutTitle "About TwitPic..."
+string kRsrc_twitpicHome "twitpic.com"
+string kRsrc_yourProfile "Your Profile"
+string kRsrc_publicTimeline "Public Timeline"
+string kRsrc_twitpicMenu "Views"
+string kRsrc_error "There was an error..."
+string kRsrc_ClearTitle "Clear Photo?"
+string kRsrc_ClarText "Clear the currently selected photo?"
+string kRsrc_menuClearPhoto "Clear Photo"
+
+#
+## Bitmaps
+#
+bitmap ID_LARGE_ICON "{base}LargeIcon.png"
+bitmap ID_SMALL_ICON "{base}SmallIcon.png"
+bitmap ID_MINI_ICON "{base}MiniIcon.png"
+bitmap ID_MARQUEE "{base}SmallIcon.png"
+bitmap ID_IMAGE_AREA "{base}image.png"
+bitmap ID_GLOBE_ICON "{base}webicon.png"
+bitmap ID_NO_IMAGE "{base}noImage.png"
+bitmap ID_LOGO "{base}logo.png"
+
+#
+## Events
+#
+event EVENT_POST
+event EVENT_SETUP
+event EVENT_PHOTO_PICKER
+event EVENT_PHOTOS
+event ABOUT
+event EVENT_STATUS_ALERT
+
+#
+## Views Menu
+#
+menu ID_URL_MENU
+	menuItem
+		title = "View Last Post"
+		shortcut = 'l'
+		event = EVENT_OPEN_URL
+		icon = ID_GLOBE_ICON
+		id = MENU_LAST_POST
+		disabled
+	menuItem
+		title = kRsrc_twitpicHome
+		shortcut = 't'
+		icon = ID_GLOBE_ICON
+		event = EVENT_twitpicCOM
+	menuItem
+		title = kRsrc_yourProfile
+		shortcut = '.'
+		icon = ID_GLOBE_ICON
+		event = EVENT_YOUtwitpicCOM
+	menuItem
+		title = kRsrc_publicTimeline
+		shortcut = 'p'
+		icon = ID_GLOBE_ICON
+		event = EVENT_PUBLICTIMELINE
+endMenu
+
+#
+## Main Menu
+#
+menu ID_MAIN_MENU
+	menuItem
+		title = kRsrc_menuLogin
+		event = EVENT_SETUP
+		id = ID_SETUP_LOGIN
+		shortcut = 's'
+	divider
+	menuItem
+		title = kRsrc_twitpicMenu
+		subMenu = ID_URL_MENU
+		id = ID_URLMENU
+	divider
+	menuItem
+		title = kRsrc_menuPhoto
+		event = EVENT_PHOTO_PICKER
+		icon = photoIcon
+		shortcut = rightShoulderButton
+	menuItem
+		title = kRsrc_menuClearPhoto
+		event = EVENT_MENU_CLEAR
+		icon = trashIcon
+		id = ID_MENUCLEAR
+	menuItem
+		title = kRsrc_menuPost
+		event = EVENT_POST
+		id = ID_MENUPOST
+		shortcut = 'm'
+	divider
+	menuItem
+		title = kRsrc_menuAbout
+		event = ABOUT
+endMenu
+
+#
+## Main Screen
+#
+screen ID_MAIN_SCREEN
+	title = kRsrc_AppTitle
+	className = "net.exiva.twitpic.a"
+	actionMenu = ID_MAIN_MENU
+	icon = ID_SMALL_ICON
+	backgroundColor = defaultPaneColor
+	button
+		event = EVENT_PHOTO_PICKER
+		id = PICTURE_BUTTON
+		title = kRsrc_PhotoButton
+		initialFocus
+		top = 5
+		left = 5
+		iconAlignLeft
+	editText
+		id = BODY_TEXT
+		labelWhenEmpty = kRsrc_bodyText
+		maxLength = 140
+		widthPct = 97
+		heightPct = 50
+		numDisplayLines = 4
+		hasBorder
+		advanceFocusOnReturn
+		positionBelow = PICTURE_BUTTON : 5
+		autoText
+		justifyLeft
+	button
+		event = EVENT_OPEN_URL
+		id = LAST_POST
+		title = kRsrc_lastPost
+		top = 5
+		alignRight = BODY_TEXT
+		iconAlignLeft
+	image
+		bitmap = ID_IMAGE_AREA
+		id = IMAGE_SPACE
+		top = 143
+		left = 5	
+	image
+		bitmap = ID_NO_IMAGE
+		id = NO_IMAGE
+		top = 146
+		left = 8
+	button
+		event = EVENT_POST
+		id = POST_BUTTON
+		title = kRsrc_postButton
+		alignRight = BODY_TEXT
+		positionBelow = BODY_TEXT: 72
+endScreen
+
+#
+## Login Screen Menu
+#
+menu ID_LOGIN_MENU
+	menuItem
+		title = kRsrc_login
+		event = EVENT_STORE_LOGIN
+		shortcut = 'l'
+	menuItem
+		title = kRsrc_setupSignUp
+		event = EVENT_SIGN_UP
+		shortcut = 's'
+	divider
+	menuItem
+		title = kRsrc_menuAbout
+		event = ABOUT
+endMenu
+
+#
+## Login Screen
+#
+screen ID_LOGIN_SCREEN
+	title = kRsrc_AppTitle
+	className = "net.exiva.twitpic.b"
+	icon = ID_SMALL_ICON
+	actionMenu = ID_LOGIN_MENU
+	backgroundColor = defaultPaneColor
+	image
+		id = LOGO
+		bitmap = ID_LOGO
+		alignWithParentTop = 10
+		centerHorizontally
+	roundRectContainer
+		id = ID_ROUND_CONTAINER
+		positionBelow = LOGO : 15
+		centerHorizontally
+		transparent
+		widthPct = 95
+		heightPct = 30
+		frameColor = 0x00FFFFFF
+		fillColor = defaultPaneColor
+	textField
+		id = ID_USERNAME
+		alignWithParentTop = 7 	
+		alignWithParentLeft = 67
+		fillToRight = 5
+		initialFocus
+	staticText
+		id = LBL_USERNAME
+		text = kRsrc_loginName
+		positionToLeft = ID_USERNAME : 5
+		transparent
+	textField
+		id = ID_PASSWORD
+		positionBelow = ID_USERNAME : 5
+		fillToRight = 5
+		passwordField
+	staticText
+		id = LBL_PASSWORD
+		text = kRsrc_password
+		positionToLeft = ID_PASSWORD : 5
+		transparent
+	endRoundRectContainer
+	progressBar
+		initialValue = -1
+    	minValue = -1
+    	maxValue = -1
+		positionBelow = ID_ROUND_CONTAINER : 20
+		alignLeft = ID_ROUND_CONTAINER
+		width = 120
+		invisible
+		id = ID_THROBBER
+	button
+		event = EVENT_STORE_LOGIN
+		id = ID_LOGIN_BUTTON
+		positionBelow = ID_ROUND_CONTAINER : 20
+		alignRight = ID_ROUND_CONTAINER
+		title = kRsrc_login
+	button
+		event = EVENT_CANCEL_LOGIN
+		id = ID_CANCEL_BUTTON
+		positionBelow = ID_ROUND_CONTAINER : 20
+		alignRight = ID_ROUND_CONTAINER
+		title = kRsrc_cancel
+		invisible
+endScreen
+
+#
+## Image Chooser type Alert
+#
+alert chooserAlert
+	title = "TwitPic"
+	icon = ID_LARGE_ICON
+	systemDialog
+	text = "Take Photo or Choose Existing Photo?"
+	button
+		position = buttonTop1
+		title = "Cancel"
+		shortcut = cancelButton
+		event = EVENT_CHOOSER_BACK
+	button
+		position = buttonBottom1
+		title = "Choose Photo"
+		shortcut = backButton
+		event = EVENT_CHOOSE_PHOTO
+		defaultButton
+	button 
+		position = buttonBottom2
+		title = "Take Photo"
+		event = EVENT_TAKE_PHOTO
+endAlert
+
+#
+## Clear Image Alert
+#
+alert clearAlert
+	title = kRsrc_ClearTitle
+	icon = trashIcon
+	appAlertStyle
+	text = kRsrc_ClarText
+	button
+		position = buttonBottom1
+		title = "Back"
+		shortcut = backButton
+		defaultButton
+	button 
+		position = buttonBottom2
+		title = "Clear Photo"
+		event = EVENT_CLEAR_PHOTO
+endAlert
+
+#
+## About Alert
+#
+alert ID_ABOUT
+	title = kRsrc_aboutTitle
+	icon = ID_LARGE_ICON
+	text = "<html><small>" +
+		"<b>"+kRsrc_AppTitle+" "+ID_VERSION+"</b><br>" +
+		"<b>Written By </b> Travis La Marr<br>" +
+		"<b>Powered By </b> twitpic.com and twitter<br>" +
+		"</html></small>"
+endAlert
+
+#
+## Posting...
+#
+alert ID_POSTING
+	title = kRsrc_AppTitle
+	icon = ID_LARGE_ICON
+	text = "Sending post, please wait..."
+	appAlertStyle
+	forceNoButtons
+endAlert
+
+#
+## Welcome!
+#
+alert ID_WELCOME
+	title = "Welcome to "+kRsrc_AppTitle
+	text = "Before continuing, You'll need an account on twitter.com. It's free to sign up, and you can do so by pressing the Menu \uF007 key and selecting \"Create Account\". If you already have an account, simply login."
+endAlert
+
+#
+## Submit Error
+#
+alert ID_SUBMIT_ERROR
+	title = kRsrc_AppTitle+" Error"
+	autoDismissMilliseconds = 3000
+	appAlertStyle
+	icon = cautionIcon
+	text = kRsrc_error
+endAlert
+
+#
+## Password Error
+#
+alert ID_PASSWORD_ERROR
+	title = kRsrc_AppTitle+" login failed"
+	appAlertStyle
+	icon = noteIcon
+	text = "Your username and/or password for twitter.com are not valid. Check your login credentials and try signing in again."
+endAlert
+
+#
+## Splash Screen
+#
+splashScreen ID_SPLASH_SCREEN_RESOURCE
+@ IF {screen} = wqvga
+wqvgaSplashScreen
+@ ELSEIF {screen} = qvga
+qvgaSplashScreen
+@ ENDIF
+	staticTextBox
+		text = ID_APP_NAME
+		id = ID_APP
+		alignWithParentLeft = 2
+		alignWithParentTop = 0
+		fillToRight = 2
+		transparent
+		doesNotHaveBorder
+	staticTextBox
+		text = kRsrc_SubTitle
+		id = ID_SUB_TITLE
+		font = boldOutlineSysFont
+		textColor = defaultSplashScreenTextColor
+		textOutlineColor = defaultSplashScreenTextOutlineColor
+		positionBelow = ID_APP : -5
+		alignWithParentLeft = 4
+		transparent
+		fillToRight = 5
+		doesNotHaveBorder
+endSplashScreen
