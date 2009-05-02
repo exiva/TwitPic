@@ -6,9 +6,9 @@ import danger.app.Event;
 import danger.app.GalleryItemIPCPayload;
 import danger.app.GalleryItem;
 //Older OS's
-import danger.app.PhotoRecord;
-import danger.app.PhotoRecordIPCPayload;
-import danger.app.IPCMessage;
+// import danger.app.PhotoRecord;
+// import danger.app.PhotoRecordIPCPayload;
+// import danger.app.IPCMessage;
 
 import danger.ui.AlertWindow;
 import danger.ui.Button;
@@ -309,13 +309,9 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				tChooser.hide();
 				return true;
 			}
-			
 			case ABOUT: {
-				// AlertWindow about = getApplication().getAlert(ID_ABOUT, this);
-				// about.show();
-				IPCMessage msg = new IPCMessage();
-				msg.addItem("action", "send");
-				Registrar.sendMessage("quickTwit", msg, null);
+				AlertWindow about = getApplication().getAlert(ID_ABOUT, this);
+				about.show();
 				return true;
 			}
 			default:
