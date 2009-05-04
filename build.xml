@@ -6,9 +6,12 @@
     <property name="APP_CLASS_NAME"  value="twitpic"/>
     <property name="APP_PACKAGE_NAME" value="net.exiva.twitpic"/>
 
-	<!-- Shuriken - T-Mo US - Post OTA -->
+	<!-- Blade - T-Mo US -->
 	<property name="VERSION" value="5.0"/>
-	<!-- <property name="BUILD" value="231400" /> -->
+	<property name="BUILD" value="265811" />
+	<!-- Shuriken - T-Mo US - Post OTA -->
+	<!-- <property name="VERSION" value="4.6"/>
+	<property name="BUILD" value="231400" /> -->
 	<!-- Style2 - T-Mo US - Post OTA -->
 	<!-- <property name="VERSION" value="4.7"/>
 	<property name="BUILD" value="231400" /> -->
@@ -21,17 +24,6 @@
 	<!-- Zante - T-Mo UK -->
 	<!-- <property name="VERSION" value="4.0"/>
 	<property name="BUILD" value="203233" /> -->
-	
-	<!-- Stop here -->
-	<!-- M2 - T-Mo US -->
-	<!-- <property name="VERSION" value="3.4"/>
-	<property name="BUILD" value="155053" /> -->
-	<!-- Style - T-Mo US -->
-	<!-- <property name="VERSION" value="3.3"/>
-	<property name="BUILD" value="149695" /> -->
-	<!-- M1 - T-Mo US -->
-	<!-- <property name="VERSION" value="2.4"/>
-	<property name="BUILD" value="138112" /> -->
 
 	<property name="APP_VERSION_MAJOR" value="1"/>
 	<property name="APP_VERSION_MINOR" value="0"/>
