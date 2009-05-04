@@ -108,7 +108,6 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		p.setTitle("Choose Existing Photo");
 		p.setIcon(Application.getCurrentApp().getResources().getBitmap(ID_MARQUEE));
 		if (camera) {
-			DEBUG.p("Camera starting...");
 			p.setStartInCaptureView(true);
 		} 
 		p.setEvent(this, EVENT_PHOTOS, 0, 0);
@@ -135,7 +134,6 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			if (record.getWidth() > 640 && record.getHeight() > 480 || record.getWidth() > 480 && record.getHeight() > 640) {
 				int width=record.getWidth()/2;
 				int height=record.getHeight()/2;
-				DEBUG.p("twitpic: width: "+width+" height: "+height);
 				//4.6+
 				Bitmap tmp1 = record.getBitmap(width, height);
 				//legacy
@@ -160,12 +158,18 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				// photoSize = record.getRawBitmapDataSize();
 			}
 			isJPEG = ImageCodec.isJPEG(photoData);
+			//5.0
+			iv = new ImageView(record.getBitmap(180,145));
 			//4.6+
-			iv = new ImageView(record.getBitmap(63,51));
+			// iv = new ImageView(record.getBitmap(63,51));
 			//legacy
 			// iv = new ImageView(record.getThumbnailBitmapWithHints(63,51));
-			iv.setPosition(9,147);
-			iv.setSize(63,51);
+			//<5.0
+			// iv.setPosition(9,147);
+			//5.0
+			iv.setPosition(10,235);
+			// iv.setSize(63,51);
+			iv.setSize(180,145);
 			//4.6+
 			iv.setAutoScale(true,true);
 			//legacy
