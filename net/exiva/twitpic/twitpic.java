@@ -5,9 +5,6 @@ import danger.app.AppResources;
 import danger.app.Bundle;
 import danger.app.Event;
 import danger.app.EventType;
-import danger.app.IPCIncoming;
-import danger.app.IPCMessage;
-import danger.app.Registrar;
 import danger.app.SettingsDB;
 import danger.app.SettingsDBException;
 
@@ -39,7 +36,7 @@ import danger.util.DEBUG;
 
 public class twitpic extends Application implements Resources, Commands {
 	public boolean firstLaunch = true;
-	private static boolean mIsAppForeground, fromquickTwit;
+	private static boolean mIsAppForeground;
 	public static int callHome;
 	MarqueeAlert mMarquee;
 	public static SettingsDB twitpicPrefs;
@@ -56,8 +53,6 @@ public class twitpic extends Application implements Resources, Commands {
 		mLogin.show();
 		aWelcome = Application.getCurrentApp().getResources().getAlert(ID_WELCOME, this);
 		aPassword = Application.getCurrentApp().getResources().getAlert(ID_PASSWORD_ERROR, this);
-		//register am IPC Service
-		Registrar.registerProvider("twitpicMsg", this, 99);
 	}
 
 	public void launch() {
@@ -121,11 +116,7 @@ public class twitpic extends Application implements Resources, Commands {
 		} else {
 			url = "http://twitpic.com/api/uploadAndPost";
 		}
-		if (fromquickTwit) {
-			source = "quickTwit";
-		} else if (!fromquickTwit) {
-			source = "hiptop";
-		}
+		source = "hiptop";
 		byte[] start = new String("--AaB03x\r\n" +
 		   					"Content-Disposition: form-data; name=\"username\"\r\n" +
 							"\r\n" +
@@ -158,7 +149,6 @@ public class twitpic extends Application implements Resources, Commands {
 						"Content-length: " + body2.length;
 
 		HTTPConnection.post(url, headers, body2, (short) 0, 1);
-		fromquickTwit = false;
 	}
 
 	public void parsePostResponse(String response) {
@@ -225,7 +215,6 @@ public class twitpic extends Application implements Resources, Commands {
 			HTTPTransaction t = (HTTPTransaction) object;
 			if((t.getSequenceID() == 1)) {
 				if (t.getResponse() == 200) {
-					DEBUG.p("String:"+t.getString());
 					parsePostResponse(t.getString());
 				}
 			}
@@ -250,31 +239,12 @@ public class twitpic extends Application implements Resources, Commands {
 		}
 	}
 
-	public void handleMessage(IPCMessage ipcmessage, int i) {
-		byte abyte0[] = ipcmessage.findByteArray("data");
-		if(abyte0 != null)
-			switch(i) {
-				case 99:
-				String s = new String(abyte0);
-				mWindow.setBody(s);
-				fromquickTwit = true;
-				break;
-			}
-	}
-
 	public boolean receiveEvent(Event e) {
 		switch (e.type) {
 			case Event.EVENT_AUTO_SYNC_DONE: {
 				restoreData();
 				return true;
 			}
-			case EventType.EVENT_MESSAGE:
-				switch(e.what) {
-					case 99:
-						handleMessage(((IPCIncoming)e.argument).getMessage(), e.what);
-					return true;
-				}
-				break;
 		}
 		return (super.receiveEvent(e));
 	}
