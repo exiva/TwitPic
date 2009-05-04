@@ -7,9 +7,8 @@ events "{source}net/exiva/twitpic/Commands.java"
 ## Application Strings
 #
 string ID_APP_NAME "TwitPic"
-@ IF {screen} = wqvga
 string ID_CHOOSER_CATEGORY "community-apps"
-@ ELSEIF {screen} = qvga
+@ IF {screen} = qvga
 string ID_CHOOSER_CATEGORY "services"
 @ ENDIF
 string ID_APP_CLASS "net.exiva.twitpic.twitpic"
@@ -24,9 +23,8 @@ string kRsrc_SubTitle "Share photos on Twitter"
 string kRsrc_AppTitle "TwitPic"
 string kRsrc_PhotoButton "Take Photo"
 string kRsrc_lastPost "View Last Post"
-@ IF {screen} = wqvga
 string kRsrc_bodyText "Type your update message (Max 140 characters)"
-@ ELSEIF {screen} = qvga
+@ IF {screen} = qvga
 string kRsrc_bodyText "Type your update message"
 @ ENDIF
 string kRsrc_postButton "Post It"
@@ -55,11 +53,16 @@ string kRsrc_menuClearPhoto "Clear Photo"
 bitmap ID_LARGE_ICON "{base}LargeIcon.png"
 bitmap ID_SMALL_ICON "{base}SmallIcon.png"
 bitmap ID_MINI_ICON "{base}MiniIcon.png"
+@ IF {screen} = wfvga
+bitmap ID_RING_ICON "{base}RingIcon.png"
+@ ENDIF
 bitmap ID_MARQUEE "{base}SmallIcon.png"
 bitmap ID_IMAGE_AREA "{base}image.png"
 bitmap ID_GLOBE_ICON "{base}webicon.png"
 bitmap ID_NO_IMAGE "{base}noImage.png"
 bitmap ID_LOGO "{base}logo.png"
+
+bitmap ID_PIX "{base}picture.png"
 
 #
 ## Events
@@ -148,45 +151,50 @@ screen ID_MAIN_SCREEN
 		event = EVENT_PHOTO_PICKER
 		id = PICTURE_BUTTON
 		title = kRsrc_PhotoButton
+		icon = ID_PIX
 		initialFocus
-		top = 5
+		# top = 5
+		# @ IF {screen} = fwvga
+		top = 17
+		# @ ENDIF
+		iconAlignLeft
 		left = 5
 		iconAlignLeft
 	editText
 		id = BODY_TEXT
 		labelWhenEmpty = kRsrc_bodyText
 		maxLength = 140
-		widthPct = 97
+		fillToRight = 5
 		heightPct = 50
-		numDisplayLines = 4
+		numDisplayLines = 5
 		hasBorder
 		advanceFocusOnReturn
-		positionBelow = PICTURE_BUTTON : 5
+		positionBelow = PICTURE_BUTTON : 10
 		autoText
 		justifyLeft
 	button
 		event = EVENT_OPEN_URL
 		id = LAST_POST
 		title = kRsrc_lastPost
-		top = 5
+		top = 16
 		alignRight = BODY_TEXT
 		iconAlignLeft
 	image
 		bitmap = ID_IMAGE_AREA
 		id = IMAGE_SPACE
-		top = 143
-		left = 5	
+		positionBelow = BODY_TEXT : 10
 	image
 		bitmap = ID_NO_IMAGE
 		id = NO_IMAGE
-		top = 146
-		left = 8
+		positionBelow = BODY_TEXT : 14
+		left = 25
 	button
 		event = EVENT_POST
 		id = POST_BUTTON
 		title = kRsrc_postButton
 		alignRight = BODY_TEXT
-		positionBelow = BODY_TEXT: 72
+		# positionBelow = BODY_TEXT: 72
+		alignWithParentBottom = 17
 endScreen
 
 #
@@ -226,21 +234,21 @@ screen ID_LOGIN_SCREEN
 		positionBelow = LOGO : 15
 		centerHorizontally
 		transparent
-		widthPct = 95
+		widthPct = 80
 		heightPct = 30
 		frameColor = 0x00FFFFFF
 		fillColor = defaultPaneColor
-	textField
-		id = ID_USERNAME
-		alignWithParentTop = 7 	
-		alignWithParentLeft = 67
-		fillToRight = 5
-		initialFocus
 	staticText
 		id = LBL_USERNAME
 		text = kRsrc_loginName
-		positionToLeft = ID_USERNAME : 5
+		alignWithParentTop = 17 	
+		alignWithParentLeft = 5
 		transparent
+	textField
+		id = ID_USERNAME
+		positionToRight = LBL_USERNAME : 5
+		fillToRight = 5
+		initialFocus
 	textField
 		id = ID_PASSWORD
 		positionBelow = ID_USERNAME : 5
@@ -258,7 +266,7 @@ screen ID_LOGIN_SCREEN
     	maxValue = -1
 		positionBelow = ID_ROUND_CONTAINER : 20
 		alignLeft = ID_ROUND_CONTAINER
-		width = 120
+		width = 200
 		invisible
 		id = ID_THROBBER
 	button
@@ -330,6 +338,7 @@ alert ID_ABOUT
 		"<b>"+kRsrc_AppTitle+" "+ID_VERSION+"</b><br>" +
 		"<b>Written By </b> Travis La Marr<br>" +
 		"<b>Powered By </b> twitpic.com and twitter<br>" +
+		"&copy; 2009 Cramped Thumbs Software<br>" +
 		"</html></small>"
 endAlert
 
