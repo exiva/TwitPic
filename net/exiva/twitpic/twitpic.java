@@ -37,7 +37,7 @@ import danger.util.DEBUG;
 public class twitpic extends Application implements Resources, Commands {
 	public boolean firstLaunch = true;
 	private static boolean mIsAppForeground;
-	public static int callHome;
+	public static int callHome, rsz;
 	MarqueeAlert mMarquee;
 	public static SettingsDB twitpicPrefs;
 	static private String error, password, postStatus, tagName, text, url, username, className, source;
@@ -80,8 +80,10 @@ public class twitpic extends Application implements Resources, Commands {
 			password = twitpicPrefs.getStringValue("password");
 			try {
 			callHome = twitpicPrefs.getIntValue("callHome");
+			rsz = twitpicPrefs.getIntValue("resize");
 			} catch (SettingsDBException exception) {}
 			mLogin.setLogin(username, password);
+			mWindow.setResize(rsz);
 			checkAuth(username, password);
 			if (callHome != 1) {
 				callHome();
@@ -102,6 +104,11 @@ public class twitpic extends Application implements Resources, Commands {
 		password = inPass;
 	}
 
+	public static void setResize(int resize) {
+		DEBUG.p("Saving resize: "+resize);
+		twitpicPrefs.setIntValue("resize", resize);
+	}
+	
 	public static void checkAuth(String inUser, String inPass) {
 		username = inUser;
 		password = inPass;
