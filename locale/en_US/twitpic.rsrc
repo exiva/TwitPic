@@ -8,9 +8,6 @@ events "{source}net/exiva/twitpic/Commands.java"
 #
 string ID_APP_NAME "TwitPic"
 string ID_CHOOSER_CATEGORY "community-apps"
-@ IF {screen} = qvga
-string ID_CHOOSER_CATEGORY "services"
-@ ENDIF
 string ID_APP_CLASS "net.exiva.twitpic.twitpic"
 string ID_VERSION "v@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@/@APP_VERSION_BUILD@"
 string ID_LOCALE "en_US"
@@ -46,6 +43,10 @@ string kRsrc_error "There was an error..."
 string kRsrc_ClearTitle "Clear Photo?"
 string kRsrc_ClarText "Clear the currently selected photo?"
 string kRsrc_menuClearPhoto "Clear Photo"
+string kRsrc_menuSettings "Settings"
+string kRsrc_AppSettings "TwitPic Settings"
+string kRsrc_ResizeImage "Resize Image?"
+string kRsrc_ResizeDescription "This will resize the image on upload, making the upload faster and use less battery."
 
 #
 ## Bitmaps
@@ -59,9 +60,9 @@ bitmap ID_RING_ICON "{base}RingIcon.png"
 bitmap ID_MARQUEE "{base}SmallIcon.png"
 bitmap ID_IMAGE_AREA "{base}image.png"
 bitmap ID_GLOBE_ICON "{base}webicon.png"
+bitmap ID_DISABLED_GLOBE_ICON "{base}webicon_disabled.png"
 bitmap ID_NO_IMAGE "{base}noImage.png"
 bitmap ID_LOGO "{base}logo.png"
-
 bitmap ID_PIX "{base}picture.png"
 
 #
@@ -134,6 +135,10 @@ menu ID_MAIN_MENU
 		shortcut = 'm'
 	divider
 	menuItem
+		title = kRsrc_menuSettings
+		event = EVENT_SETTINGS
+	divider
+	menuItem
 		title = kRsrc_menuAbout
 		event = ABOUT
 endMenu
@@ -153,10 +158,13 @@ screen ID_MAIN_SCREEN
 		title = kRsrc_PhotoButton
 		icon = ID_PIX
 		initialFocus
-		# top = 5
-		# @ IF {screen} = fwvga
+		@ IF {screen} = fwvga
 		top = 17
-		# @ ENDIF
+		@ ELSEIF {screen} = wqvga
+		top = 5
+		@ ELSEIF {screen} = qvga
+		top = 5
+		@ ENDIF
 		iconAlignLeft
 		left = 5
 		iconAlignLeft
@@ -169,32 +177,65 @@ screen ID_MAIN_SCREEN
 		numDisplayLines = 5
 		hasBorder
 		advanceFocusOnReturn
+		@ IF {screen} = fwvga
 		positionBelow = PICTURE_BUTTON : 10
+		@ ELSEIF {screen} = wqvga
+		positionBelow = PICTURE_BUTTON : 5
+		@ ELSEIF {screen} = qvga
+		positionBelow = PICTURE_BUTTON : 5
+		@ ENDIF
 		autoText
 		justifyLeft
 	button
 		event = EVENT_OPEN_URL
 		id = LAST_POST
 		title = kRsrc_lastPost
+		disabledIcon = ID_DISABLED_GLOBE_ICON
+		icon = ID_GLOBE_ICON
+		@ IF {screen} = fwvga
 		top = 16
+		@ ELSEIF {screen} = wqvga
+		top = 5
+		@ ELSEIF {screen} = qvga
+		top = 5
+		@ ENDIF
 		alignRight = BODY_TEXT
 		iconAlignLeft
 	image
 		bitmap = ID_IMAGE_AREA
 		id = IMAGE_SPACE
+		@ IF {screen} = fwvga
 		positionBelow = BODY_TEXT : 10
+		@ ELSEIF {screen} = wqvga
+		positionBelow = BODY_TEXT : 5
+		@ ELSEIF {screen} = qvga
+		positionBelow = BODY_TEXT : 5
+		@ ENDIF
 	image
 		bitmap = ID_NO_IMAGE
 		id = NO_IMAGE
+		@ IF {screen} = fwvga
 		positionBelow = BODY_TEXT : 14
 		left = 25
+		@ ELSEIF {screen} = wqvga
+		positionBelow = BODY_TEXT : 9
+		left = 14
+		@ ELSEIF {screen} = qvga
+		positionBelow = BODY_TEXT : 9
+		left = 14
+		@ ENDIF
 	button
 		event = EVENT_POST
 		id = POST_BUTTON
 		title = kRsrc_postButton
 		alignRight = BODY_TEXT
-		# positionBelow = BODY_TEXT: 72
+		@ IF {screen} = fwvga
 		alignWithParentBottom = 17
+		@ ELSEIF {screen} = wqvga
+		alignWithParentBottom = 26
+		@ ELSEIF {screen} = qvga
+		alignWithParentBottom = 26
+		@ ENDIF
 endScreen
 
 #
@@ -241,7 +282,13 @@ screen ID_LOGIN_SCREEN
 	staticText
 		id = LBL_USERNAME
 		text = kRsrc_loginName
-		alignWithParentTop = 17 	
+		@ IF {screen} = fwvga
+		alignWithParentTop = 17
+		@ ELSEIF {screen} = wqvga
+		alignWithParentTop = 6
+		@ ELSEIF {screen} = qvga
+		alignWithParentTop = 6
+		@ ENDIF
 		alignWithParentLeft = 5
 		transparent
 	textField
@@ -411,3 +458,20 @@ qvgaSplashScreen
 		fillToRight = 5
 		doesNotHaveBorder
 endSplashScreen
+
+#
+## Settings Dialog
+#
+dialog ID_SETTINGS
+	title = kRsrc_AppSettings
+	showCancel
+	doneEvent = EVENT_SETTINGS_DONE
+	doneIsDefault
+	center
+	checkBox
+		id = RESIZE_IMAGE
+		title = kRsrc_ResizeImage
+		description = kRsrc_ResizeDescription
+		# alignWithParentLeft = 2
+		center
+endDialog
