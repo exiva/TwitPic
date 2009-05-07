@@ -8,11 +8,11 @@ import danger.app.GalleryItem;
 //Older OS's
 // import danger.app.PhotoRecord;
 // import danger.app.PhotoRecordIPCPayload;
-// import danger.app.IPCMessage;
 
 import danger.ui.AlertWindow;
 import danger.ui.Button;
 import danger.ui.Bitmap;
+import danger.ui.CheckBox;
 import danger.ui.DialogWindow;
 import danger.ui.EditText;
 import danger.ui.ImageCodec;
@@ -33,13 +33,15 @@ import danger.app.Registrar;
 public class twitpicView extends ScreenWindow implements Resources, Commands {
 	AlertWindow tChooser, tClear, tPosting, tError;
 	Button tLastPost, tPhoto, tPost;
+	CheckBox tResize;
+	DialogWindow dSettings;
 	ImageView tNoImage, iv;
 	MenuItem mClearPhoto, mLastPost, mPost;
 	private static Button tStatusButton, tPhotosButton;
 	public static boolean mPhotoSelec, isJPEG, menuClear, menuEnable;
 	public static byte[] photoData;
 	private static EditText bodyField;
-	public static int photoSize, width, height;
+	public static int photoSize, width, height, resize;
 	public ProgressWindow postProgress;
 	public static String photoname, lastPost;
 
@@ -48,6 +50,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		tError = getApplication().getAlert(ID_SUBMIT_ERROR, this);
 		tClear = getApplication().getAlert(clearAlert, this);
 		tChooser = getApplication().getAlert(chooserAlert, this);
+		dSettings = getApplication().getDialog(ID_SETTINGS, this);
 	}
 
 	public static twitpicView create() {
@@ -61,11 +64,13 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		tPost = (Button)this.getDescendantWithID(POST_BUTTON);
 		tPhoto = (Button)this.getDescendantWithID(PICTURE_BUTTON);
 		bodyField = (EditText) getChildWithID(BODY_TEXT);
+		tResize = (CheckBox)dSettings.getDescendantWithID(RESIZE_IMAGE);
 		tNoImage.show();
 		tLastPost.disable();
 		tPost.disable();
 		//Enable spellcheck on the body. (4.6+ Only.)
 		((EditText)getChildWithID(BODY_TEXT)).setSpellCheckEnabled(true);
+        super.onDecoded();
 	}
 
 	public final void adjustActionMenuState(Menu menu) {
@@ -86,6 +91,11 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		}
 	}
 
+	public void setResize(int rsz) {
+		resize = rsz;
+		tResize.setValue(rsz);
+	}
+	
 	public void changeState(int state) {
 		//state 0 = button disabled. no photo.
 		//state 1 = button enabled. photo.
@@ -131,7 +141,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			//legacy
 			// PhotoRecord record = photos.getRecordAt(i);
 			photoname = record.getName();
-			if (record.getWidth() > 640 && record.getHeight() > 480 || record.getWidth() > 480 && record.getHeight() > 640) {
+			if (resize == 1 && record.getWidth() > 640 && record.getHeight() > 480 || resize == 1 && record.getWidth() > 480 && record.getHeight() > 640) {
 				int width=record.getWidth()/2;
 				int height=record.getHeight()/2;
 				//4.6+
@@ -160,17 +170,17 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			isJPEG = ImageCodec.isJPEG(photoData);
 			//5.0
 			iv = new ImageView(record.getBitmap(180,145));
-			//4.6+
+			//4.6-4.7
 			// iv = new ImageView(record.getBitmap(63,51));
 			//legacy
 			// iv = new ImageView(record.getThumbnailBitmapWithHints(63,51));
 			//<5.0
-			// iv.setPosition(9,147);
+			// iv.setPosition(9,122);
+			// iv.setSize(63,51);
 			//5.0
 			iv.setPosition(10,235);
-			// iv.setSize(63,51);
 			iv.setSize(180,145);
-			//4.6+
+			//4.6
 			iv.setAutoScale(true,true);
 			//legacy
 			// iv.setAutoScale(true,false);
@@ -293,7 +303,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			case EVENT_PHOTOS: {
 				//4.6+
 				showSelectedPhotos((GalleryItemIPCPayload) e.argument);
-				//legacy
+				// legacy
 				// showSelectedPhotos((PhotoRecordIPCPayload) e.argument);
 				return true;
 			}
@@ -311,6 +321,15 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			}
 			case EVENT_CHOOSER_BACK: {
 				tChooser.hide();
+				return true;
+			}
+			case EVENT_SETTINGS_DONE: {
+				twitpic.setResize(tResize.getValue());
+				resize=tResize.getValue();
+				return true;
+			}
+			case EVENT_SETTINGS: {
+				dSettings.show();
 				return true;
 			}
 			case ABOUT: {
