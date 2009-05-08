@@ -48,8 +48,8 @@ public class twitpicLoginView extends ScreenWindow implements Resources, Command
 		password.enable();
 		throbber.hide();
 		mTimer.stop();
-		cancel.hide();
-		login.show();
+		// cancel.hide();
+		login.enable();
 	}
 
 	public void disableInput() {
@@ -57,8 +57,8 @@ public class twitpicLoginView extends ScreenWindow implements Resources, Command
 		password.disable();
 		throbber.show();
 		mTimer.start();
-		login.hide();
-		cancel.show();
+		login.disable();
+		// cancel.show();
 		setFocusedDescendant(cancel);
 	}
 
