@@ -11,7 +11,7 @@ import danger.ui.ScreenWindow;
 import danger.ui.TextField;
 
 public class twitpicLoginView extends ScreenWindow implements Resources, Commands {
-	private static Button login, cancel;
+	private static Button login;
 	private static TextField username, password;
 	private static ProgressBar throbber;
 	private static Timer mTimer;
@@ -25,7 +25,6 @@ public class twitpicLoginView extends ScreenWindow implements Resources, Command
 		password = (TextField)this.getDescendantWithID(ID_PASSWORD);
 		throbber = (ProgressBar)this.getChildWithID(ID_THROBBER);
 		login = (Button)this.getDescendantWithID(ID_LOGIN_BUTTON);
-		cancel = (Button)this.getDescendantWithID(ID_CANCEL_BUTTON);
 	}
 
 	public static twitpicLoginView create() {
@@ -48,7 +47,6 @@ public class twitpicLoginView extends ScreenWindow implements Resources, Command
 		password.enable();
 		throbber.hide();
 		mTimer.stop();
-		// cancel.hide();
 		login.enable();
 	}
 
@@ -58,8 +56,6 @@ public class twitpicLoginView extends ScreenWindow implements Resources, Command
 		throbber.show();
 		mTimer.start();
 		login.disable();
-		// cancel.show();
-		setFocusedDescendant(cancel);
 	}
 
 	public static void stopThrobber() {
@@ -75,21 +71,9 @@ public class twitpicLoginView extends ScreenWindow implements Resources, Command
 				}
 				return false;
 			}
-			case EVENT_SIGN_UP: {
-				try{
-					danger.net.URL.gotoURL("http://twitter.com/signup");
-				}
-				catch (danger.net.URLException exc) {}
-				return false;
-			}
 			case EVENT_STORE_LOGIN: {
 				twitpic.checkAuth(username.toString(), password.toString());
 				disableInput();
-				return true;
-			}
-			case EVENT_CANCEL_LOGIN: {
-				enableInput();
-				stopThrobber();
 				return true;
 			}
 			case ABOUT: {
