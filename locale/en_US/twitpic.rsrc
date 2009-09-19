@@ -25,7 +25,7 @@ string kRsrc_bodyText "Type your update message (Max 140 characters)"
 string kRsrc_bodyText "Type your update message"
 @ ENDIF
 string kRsrc_postButton "Post It"
-string kRsrc_menuLogin "Setup Login"
+string kRsrc_menuLogin "Log Out"
 string kRsrc_menuPhoto "Take Photo"
 string kRsrc_menuPost "Post It"
 string kRsrc_menuAbout "About TwitPic"
@@ -47,6 +47,7 @@ string kRsrc_menuSettings "Settings"
 string kRsrc_AppSettings "TwitPic Settings"
 string kRsrc_ResizeImage "Resize Image?"
 string kRsrc_ResizeDescription "This will resize the image on upload, making the upload faster and use less battery."
+string kRsrc_copy "Copy last TwitPic"
 
 #
 ## Bitmaps
@@ -57,6 +58,7 @@ bitmap ID_MINI_ICON "{base}MiniIcon.png"
 @ IF {screen} = wfvga
 bitmap ID_RING_ICON "{base}RingIcon.png"
 @ ENDIF
+bitmap ID_SPLASH_SCREEN "{base}SplashScreenTransparent.png"
 bitmap ID_MARQUEE "{base}SmallIcon.png"
 bitmap ID_IMAGE_AREA "{base}image.png"
 bitmap ID_GLOBE_ICON "{base}webicon.png"
@@ -108,10 +110,10 @@ endMenu
 #
 menu ID_MAIN_MENU
 	menuItem
-		title = kRsrc_menuLogin
-		event = EVENT_SETUP
-		id = ID_SETUP_LOGIN
-		shortcut = 's'
+		title = kRsrc_menuPhoto
+		event = EVENT_PHOTO_PICKER
+		icon = photoIcon
+		shortcut = rightShoulderButton
 	divider
 	menuItem
 		title = kRsrc_twitpicMenu
@@ -119,11 +121,11 @@ menu ID_MAIN_MENU
 		id = ID_URLMENU
 	divider
 	menuItem
-		title = kRsrc_menuPhoto
-		event = EVENT_PHOTO_PICKER
-		icon = photoIcon
-		shortcut = rightShoulderButton
-	menuItem
+		title = kRsrc_copy
+		event = EVENT_COPY_URL
+		id = ID_COPY_LAST
+		disabled
+	divider
 		title = kRsrc_menuClearPhoto
 		event = EVENT_MENU_CLEAR
 		icon = trashIcon
@@ -139,6 +141,11 @@ menu ID_MAIN_MENU
 		event = EVENT_SETTINGS
 	divider
 	menuItem
+		title = kRsrc_menuLogin
+		event = EVENT_SETUP
+		id = ID_SETUP_LOGIN
+	divider
+	menuItem
 		title = kRsrc_menuAbout
 		event = ABOUT
 endMenu
@@ -148,7 +155,7 @@ endMenu
 #
 screen ID_MAIN_SCREEN
 	title = kRsrc_AppTitle
-	className = "net.exiva.twitpic.a"
+	className = "net.exiva.twitpic.b"
 	actionMenu = ID_MAIN_MENU
 	icon = ID_SMALL_ICON
 	backgroundColor = defaultPaneColor
@@ -246,10 +253,6 @@ menu ID_LOGIN_MENU
 		title = kRsrc_login
 		event = EVENT_STORE_LOGIN
 		shortcut = 'l'
-	menuItem
-		title = kRsrc_setupSignUp
-		event = EVENT_SIGN_UP
-		shortcut = 's'
 	divider
 	menuItem
 		title = kRsrc_menuAbout
@@ -261,7 +264,7 @@ endMenu
 #
 screen ID_LOGIN_SCREEN
 	title = kRsrc_AppTitle
-	className = "net.exiva.twitpic.b"
+	className = "net.exiva.twitpic.a"
 	icon = ID_SMALL_ICON
 	actionMenu = ID_LOGIN_MENU
 	backgroundColor = defaultPaneColor
@@ -357,6 +360,48 @@ alert chooserAlert
 endAlert
 
 #
+## No text entered alert
+#
+alert notextAlert
+	title = "TwitPic"
+	icon = ID_LARGE_ICON
+	systemDialog
+	text = "There was no text entered. This photo will not be posted to your TwitPic account but not Twitter."
+	button
+		position = buttonTop1
+		title = "Cancel"
+		shortcut = cancelButton
+		event = EVENT_CHOOSER_BACK
+	button
+		position = buttonBottom1
+		title = "Continue"
+		shortcut = backButton
+		event = EVENT_POST_NO_TEXT
+		defaultButton
+endAlert
+
+#
+## Copy alert
+#
+alert copyURLAlert
+	title = "TwitPic"
+	icon = ID_LARGE_ICON
+	systemDialog
+	text = "Would you like to copy the last TwitPic URL to the Clipboard?."
+	button
+		position = buttonTop1
+		title = "Cancel"
+		shortcut = cancelButton
+		event = EVENT_CHOOSER_BACK
+	button
+		position = buttonBottom1
+		title = "Copy"
+		shortcut = backButton
+		event = EVENT_COPY_URL
+		defaultButton
+endAlert
+
+#
 ## Clear Image Alert
 #
 alert clearAlert
@@ -405,7 +450,7 @@ endAlert
 #
 alert ID_WELCOME
 	title = "Welcome to "+kRsrc_AppTitle
-	text = "Before continuing, You'll need an account on twitter.com. It's free to sign up, and you can do so by pressing the Menu \uF007 key and selecting \"Create Account\". If you already have an account, simply login."
+	text = "Before continuing, You'll need an account on twitter.com. It's free to sign up, and you can do so at twitter.com. If you already have an account, simply login."
 endAlert
 
 #
@@ -413,7 +458,6 @@ endAlert
 #
 alert ID_SUBMIT_ERROR
 	title = kRsrc_AppTitle+" Error"
-	autoDismissMilliseconds = 3000
 	appAlertStyle
 	icon = cautionIcon
 	text = kRsrc_error
@@ -438,25 +482,10 @@ wqvgaSplashScreen
 @ ELSEIF {screen} = qvga
 qvgaSplashScreen
 @ ENDIF
-	staticTextBox
-		text = ID_APP_NAME
-		id = ID_APP
-		alignWithParentLeft = 2
-		alignWithParentTop = 0
-		fillToRight = 2
-		transparent
-		doesNotHaveBorder
-	staticTextBox
-		text = kRsrc_SubTitle
-		id = ID_SUB_TITLE
-		font = boldOutlineSysFont
-		textColor = defaultSplashScreenTextColor
-		textOutlineColor = defaultSplashScreenTextOutlineColor
-		positionBelow = ID_APP : -5
-		alignWithParentLeft = 4
-		transparent
-		fillToRight = 5
-		doesNotHaveBorder
+image
+	bitmap = ID_SPLASH_SCREEN
+	alignWithParentLeft = 0
+	alignWithParentTop = 0
 endSplashScreen
 
 #
@@ -472,6 +501,5 @@ dialog ID_SETTINGS
 		id = RESIZE_IMAGE
 		title = kRsrc_ResizeImage
 		description = kRsrc_ResizeDescription
-		# alignWithParentLeft = 2
 		center
 endDialog
