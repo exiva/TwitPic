@@ -7,6 +7,9 @@ import danger.app.Event;
 import danger.app.EventType;
 import danger.app.SettingsDB;
 import danger.app.SettingsDBException;
+import danger.app.IPCIncoming;
+import danger.app.IPCMessage;
+import danger.app.Registrar;
 
 import danger.audio.Meta;
 
@@ -23,6 +26,7 @@ import danger.ui.DialogWindow;
 import danger.ui.NotificationManager;
 import danger.ui.MarqueeAlert;
 
+import danger.util.DEBUG;
 import danger.util.StringUtils;
 import danger.util.MetaStrings;
 
@@ -32,18 +36,16 @@ import java.io.IOException;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import danger.util.DEBUG;
-
 public class twitpic extends Application implements Resources, Commands {
 	public boolean firstLaunch = true;
 	private static boolean mIsAppForeground;
-	public static int callHome, rsz;
+	public static int rsz;
 	MarqueeAlert mMarquee;
 	public static SettingsDB twitpicPrefs;
-	static private String error, password, postStatus, tagName, text, url, username, className, source;
+	static private String error, password, postStatus, tagName, text, uploadurl = "http://twitpic.com/api/upload", uploadandposturl = "http://twitpic.com/api/uploadAndPost", username, className, source = "hiptop";
 	static public twitpicView mWindow;
 	static public twitpicLoginView mLogin;
-	AlertWindow aPassword, aWelcome;
+	AlertWindow aError, aPassword, aWelcome;
 
 	public twitpic() {
 		mWindow = twitpicView.create();
@@ -53,6 +55,9 @@ public class twitpic extends Application implements Resources, Commands {
 		mLogin.show();
 		aWelcome = Application.getCurrentApp().getResources().getAlert(ID_WELCOME, this);
 		aPassword = Application.getCurrentApp().getResources().getAlert(ID_PASSWORD_ERROR, this);
+		aError = Application.getCurrentApp().getResources().getAlert(ID_SUBMIT_ERROR, this);
+		//register a provider to get into the photo picker
+		Registrar.registerProvider("send-via", this, 1, Application.getCurrentApp().getResources().getBitmap(ID_MARQUEE), "TwitPic", 'T', Registrar.DATA_TYPE_FLAG_PHOTO_RECORD);
 	}
 
 	public void launch() {
@@ -72,28 +77,18 @@ public class twitpic extends Application implements Resources, Commands {
 		if (SettingsDB.findDB("twitpicSettings") == false) {
 			twitpicPrefs = new SettingsDB("twitpicSettings", true);
 			twitpicPrefs.setAutoSyncNotifyee(this);
-			callHome();
 			aWelcome.show();
 		} else {
 			twitpicPrefs = new SettingsDB("twitpicSettings", true);
 			username = twitpicPrefs.getStringValue("username");
 			password = twitpicPrefs.getStringValue("password");
 			try {
-			callHome = twitpicPrefs.getIntValue("callHome");
 			rsz = twitpicPrefs.getIntValue("resize");
 			} catch (SettingsDBException exception) {}
 			mLogin.setLogin(username, password);
 			mWindow.setResize(rsz);
 			checkAuth(username, password);
-			if (callHome != 1) {
-				callHome();
-			}
 		}
-	}
-
-	public static void callHome() {
-		HTTPConnection.get("http://static.tmblr.us/hiptop/hiptopLog2.php?a="+className+"&n="+MetaStrings.get(MetaStrings.ID_PARTNER_NAME)+"&d="+MetaStrings.get(MetaStrings.ID_DEVICE_MODEL)+"&b="+MetaStrings.get(MetaStrings.ID_BRAND_NAME)+"&u="+HiptopConnection.getUserName(), null, (short) 0, 99);
-		twitpicPrefs.setIntValue("callHome", 1);
 	}
 
 	public static void storeLogin(String inUser, String inPass) {
@@ -105,7 +100,6 @@ public class twitpic extends Application implements Resources, Commands {
 	}
 
 	public static void setResize(int resize) {
-		DEBUG.p("Saving resize: "+resize);
 		twitpicPrefs.setIntValue("resize", resize);
 	}
 	
@@ -114,16 +108,10 @@ public class twitpic extends Application implements Resources, Commands {
 		password = inPass;
 		mLogin.disableInput();
 		String twitterLogin = Base64.encode((inUser+":"+inPass).getBytes());
-		HTTPConnection.get("http://twitter.com/account/verify_credentials.json", "Authorization: Basic "+twitterLogin, (short) 0, 2);
+		HTTPConnection.get("http://twitter.com/account/verify_credentials.json", "Authorization: Basic "+twitterLogin, (short) 0, 3);
 	}
 
-	public static void postEntry(String body, byte[] oJPEG, String filename, int size) {
-		if (body.equals("")) {
-			url = "http://twitpic.com/api/upload";
-		} else {
-			url = "http://twitpic.com/api/uploadAndPost";
-		}
-		source = "hiptop";
+	public static void postEntryToTwitter(String body, byte[] oJPEG, String filename, int size, String mime) {
 		byte[] start = new String("--AaB03x\r\n" +
 		   					"Content-Disposition: form-data; name=\"username\"\r\n" +
 							"\r\n" +
@@ -142,7 +130,7 @@ public class twitpic extends Application implements Resources, Commands {
 							source+"\r\n" +
 							"--AaB03x\r\n" +
 							"content-disposition: form-data; name=\"media\"; filename=\""+filename+"\"\r\n" +
-							"Content-Type: image/jpeg\r\n" +
+							"Content-Type: "+mime+"\r\n" +
 							"\r\n").getBytes();
 		byte[] end = new String("\r\n" +
 							"--AaB03x--").getBytes();
@@ -153,12 +141,45 @@ public class twitpic extends Application implements Resources, Commands {
 		System.arraycopy(end, 0, body2, start.length + oJPEG.length, end.length);
 		
 		String headers = "Content-type: multipart/form-data, boundary=AaB03x\r\n" +
+						"User-Agent: Danger Hiptop v1.0/30\r\n" +
 						"Content-length: " + body2.length;
 
-		HTTPConnection.post(url, headers, body2, (short) 0, 1);
+		HTTPConnection.post(uploadandposturl, headers, body2, (short) 0, 1);
 	}
 
-	public void parsePostResponse(String response) {
+	public static void postEntryToTwitpic(byte[] oJPEG, String filename, int size, String mime) {
+		byte[] start = new String("--AaB03x\r\n" +
+		   					"Content-Disposition: form-data; name=\"username\"\r\n" +
+							"\r\n" +
+							username+"\r\n" +
+							"--AaB03x\r\n" +
+							"Content-Disposition: form-data; name=\"password\"\r\n" +
+							"\r\n" +
+							password+"\r\n" +
+							"--AaB03x\r\n" +
+							"Content-Disposition: form-data; name=\"source\"\r\n" +
+							"\r\n" +
+							source+"\r\n" +
+							"--AaB03x\r\n" +
+							"content-disposition: form-data; name=\"media\"; filename=\""+filename+"\"\r\n" +
+							"Content-Type: "+mime+"\r\n" +
+							"\r\n").getBytes();
+		byte[] end = new String("\r\n" +
+							"--AaB03x--").getBytes();
+												
+		byte[] body2 = new byte[start.length + oJPEG.length + end.length];
+		System.arraycopy(start, 0, body2, 0, start.length);
+		System.arraycopy(oJPEG, 0, body2, start.length, oJPEG.length);
+		System.arraycopy(end, 0, body2, start.length + oJPEG.length, end.length);
+		
+		String headers = "Content-type: multipart/form-data, boundary=AaB03x\r\n" +
+						"User-Agent: Danger Hiptop v1.0/30\r\n" +
+						"Content-length: " + body2.length;
+
+		HTTPConnection.post(uploadurl, headers, body2, (short) 0, 2);
+	}
+	
+	public void parsePostResponse(String response, boolean copy) {
 		StringReader sr = new StringReader(response);
 		String postStatus, postMessage, tagName, text;
 		KXmlParser xpp = new KXmlParser();
@@ -182,6 +203,9 @@ public class twitpic extends Application implements Resources, Commands {
 								NotificationManager.marqueeAlertNotify(mMarquee);
 							}
 							Meta.play(Meta.BEEP_ACTION_SUCCESS);
+							if (copy) {
+								mWindow.copy();
+							}
 							mWindow.clear();
 						} else if (postStatus.equals("fail")) {
 							mWindow.clearPostWindow();
@@ -203,29 +227,42 @@ public class twitpic extends Application implements Resources, Commands {
 							if (xpp.getAttributeValue(0).equals("1001")) {
 								mLogin.show();
 								mLogin.enableInput();
-							} else {
-								AlertWindow postedAlert = new AlertWindow("Twitpic", xpp.getAttributeValue(1), false);
-								postedAlert.setWindowStyle(DialogWindow.APP_ALERT_STYLE);
-								postedAlert.show();
+								aPassword.show();
+							} if (xpp.getAttributeValue(0).equals("1003")) {
+								aError.setMessage("Invalid image type. This error should never occur. Please contact support@crampedthumbs.com with Error 1003 in the Subject.");
+								aError.show();
+							} if (xpp.getAttributeValue(0).equals("1004")) {
+								aError.setMessage("The image you tried to post was larger than 4MB. Please enable resizing in the settings and try again.");
+								aError.show();
+							}
 						}
 					}
 				}
 			}
-		}
 		catch (XmlPullParserException ex) { }
 		catch (IOException ioex) { }
 	}
 
+	public void handleMessage(IPCMessage ipcmessage, int i) {
+		mWindow.showSelectedPhotos(ipcmessage.findGalleryItemIPCPayload("photo-records"));
+		Bundle twitpic = Bundle.findByClassName("net.exiva.twitpic.twitpic");
+		Registrar.bringToForeground(twitpic);
+	}
 	
 	public void networkEvent(Object object) {
 		if (object instanceof HTTPTransaction) {
 			HTTPTransaction t = (HTTPTransaction) object;
 			if((t.getSequenceID() == 1)) {
 				if (t.getResponse() == 200) {
-					parsePostResponse(t.getString());
+					parsePostResponse(t.getString(), false);
 				}
 			}
-			if (t.getSequenceID() == 2) {
+			if((t.getSequenceID() == 2)) {
+				if (t.getResponse() == 200) {
+					parsePostResponse(t.getString(), true);
+				}
+			}
+			if (t.getSequenceID() == 3) {
 				if (t.getResponse() != 200) {
 					if (!this.mIsAppForeground) { 
 						mMarquee.setText("Login error. Check your username and password,");
@@ -251,6 +288,14 @@ public class twitpic extends Application implements Resources, Commands {
 			case Event.EVENT_AUTO_SYNC_DONE: {
 				restoreData();
 				return true;
+			}
+			case EventType.EVENT_MESSAGE: {
+				switch(e.what) {
+					case 1 : {
+						handleMessage(((IPCIncoming)e.argument).getMessage(), e.what);
+						return true;
+					}
+				}
 			}
 		}
 		return (super.receiveEvent(e));
