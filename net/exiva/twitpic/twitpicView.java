@@ -8,6 +8,8 @@ import danger.app.GalleryItem;
 //Older OS's
 // import danger.app.PhotoRecord;
 // import danger.app.PhotoRecordIPCPayload;
+import danger.app.IPCMessage;
+import danger.app.Registrar;
 
 import danger.ui.AlertWindow;
 import danger.ui.Button;
@@ -26,30 +28,31 @@ import danger.ui.Shortcut;
 import danger.ui.TextField;
 import danger.ui.TextInputAlertWindow;
 
+import danger.util.Pasteboard;
 import danger.util.DEBUG;
-import danger.app.IPCMessage;
-import danger.app.Registrar;
 
 public class twitpicView extends ScreenWindow implements Resources, Commands {
-	AlertWindow tChooser, tClear, tPosting, tError;
+	AlertWindow tChooser, tClear, tCopyURL, tNoText, tPosting, tError;
 	Button tLastPost, tPhoto, tPost;
 	CheckBox tResize;
 	DialogWindow dSettings;
 	ImageView tNoImage, iv;
-	MenuItem mClearPhoto, mLastPost, mPost;
+	MenuItem mClearPhoto, mCopyLast, mLastPost, mPost;
 	private static Button tStatusButton, tPhotosButton;
 	public static boolean mPhotoSelec, isJPEG, menuClear, menuEnable;
 	public static byte[] photoData;
 	private static EditText bodyField;
 	public static int photoSize, width, height, resize;
 	public ProgressWindow postProgress;
-	public static String photoname, lastPost;
+	public static String mimeData, photoname, lastPost;
 
 	public twitpicView() {
 		tPosting = getApplication().getAlert(ID_POSTING, this);
 		tError = getApplication().getAlert(ID_SUBMIT_ERROR, this);
 		tClear = getApplication().getAlert(clearAlert, this);
 		tChooser = getApplication().getAlert(chooserAlert, this);
+		tCopyURL = getApplication().getAlert(copyURLAlert, this);
+		tNoText = getApplication().getAlert(notextAlert, this);
 		dSettings = getApplication().getDialog(ID_SETTINGS, this);
 	}
 
@@ -79,11 +82,13 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		
 		Menu urlmenu = menu.getItemWithID(ID_URLMENU).getSubMenu();
 		mLastPost = urlmenu.getItemWithID(MENU_LAST_POST);
+		mCopyLast = menu.getItemWithID(ID_COPY_LAST);
 		mClearPhoto = menu.getItemWithID(ID_MENUCLEAR);
 		mPost = menu.getItemWithID(ID_MENUPOST);
 		
 		if (this.menuEnable) {
 			mLastPost.enable();
+			mCopyLast.enable();
 		}
 		if (!menuClear) {
 			mClearPhoto.disable();
@@ -124,6 +129,10 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		p.show();
 	}
 
+	public void copy() {
+		tCopyURL.show();
+	}
+	
 	//4.6+
 	public void showSelectedPhotos(GalleryItemIPCPayload photos) {
 	//legacy devices
@@ -141,6 +150,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			//legacy
 			// PhotoRecord record = photos.getRecordAt(i);
 			photoname = record.getName();
+			mimeData = record.getMimeType();
 			if (resize == 1 && record.getWidth() > 640 && record.getHeight() > 480 || resize == 1 && record.getWidth() > 480 && record.getHeight() > 640) {
 				int width=record.getWidth()/2;
 				int height=record.getHeight()/2;
@@ -159,6 +169,8 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				photoData = new byte[len];
 				System.arraycopy(tmp, 0, photoData, 0, len);
 				photoSize = photoData.length;
+
+				DEBUG.p("Photo Size: "+photoSize);
 			} else {
 				//4.6+
 				photoData = record.getData();
@@ -198,6 +210,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		menuEnable = true;
 		tLastPost.enable();
 		mLastPost.enable();
+		mCopyLast.enable();
 	}
 
 	public void clear() {
@@ -239,13 +252,6 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 
 	public boolean receiveEvent(Event e) {
 		switch (e.type) {
-			case EVENT_SIGN_UP: {
-				try{
-					danger.net.URL.gotoURL("https://twitter.com/signup");
-				}
-				catch (danger.net.URLException exc) { }
-				return false;
-			}
 			case EVENT_OPEN_URL: {
 				try {
 					danger.net.URL.gotoURL(lastPost);
@@ -273,9 +279,20 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				}
 				//everything is good. post and display window.
 				if (isJPEG) {
-					twitpic.postEntry(bodyField.toString(),photoData,photoname,photoSize);
-					tPosting.show();
+					if (bodyField.toString().equals("")) {
+						//no text -- post does not go to twitter
+						tNoText.show();
+					} else {
+						//text, it's normal!
+						twitpic.postEntryToTwitter(bodyField.toString(),photoData,photoname,photoSize,mimeData);
+						tPosting.show();
+					}					
 				}
+				return true;
+			}
+			case EVENT_POST_NO_TEXT: {
+				twitpic.postEntryToTwitpic(photoData,photoname,photoSize, mimeData);
+				tPosting.show();
 				return true;
 			}
 			case EVENT_twitpicCOM: {
@@ -321,6 +338,10 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			}
 			case EVENT_CHOOSER_BACK: {
 				tChooser.hide();
+				return true;
+			}
+			case EVENT_COPY_URL: {
+				Pasteboard.setString(lastPost);
 				return true;
 			}
 			case EVENT_SETTINGS_DONE: {
