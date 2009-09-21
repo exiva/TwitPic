@@ -6,7 +6,7 @@ events "{source}net/exiva/twitpic/Commands.java"
 #
 ## Application Strings
 #
-string ID_APP_NAME "TwitPic"
+string ID_APP_NAME "Twitpic"
 string ID_CHOOSER_CATEGORY "community-apps"
 string ID_APP_CLASS "net.exiva.twitpic.twitpic"
 string ID_VERSION "v@APP_VERSION_MAJOR@.@APP_VERSION_MINOR@/@APP_VERSION_BUILD@"
@@ -17,8 +17,9 @@ string ID_APP_FLAGS "L"
 ## Text Strings
 #
 string kRsrc_SubTitle "Share photos on Twitter"
-string kRsrc_AppTitle "TwitPic"
+string kRsrc_AppTitle "Twitpic"
 string kRsrc_PhotoButton "Take Photo"
+string kRsrc_ChoosePhotoButton "Choose Photo"
 string kRsrc_lastPost "View Last Post"
 string kRsrc_bodyText "Type your update message (Max 140 characters)"
 @ IF {screen} = qvga
@@ -29,9 +30,10 @@ string kRsrc_menuLogin "Log Out"
 string kRsrc_menuPhoto "Take Photo"
 string kRsrc_menuPost "Post It"
 string kRsrc_menuAbout "About TwitPic"
-string kRsrc_setupSignUp "Sign Up"
+string kRsrc_menuLastPost "View Last Post"
 string kRsrc_login "Login"
 string kRsrc_cancel "Cancel"
+string kRsrc_continue "Continue"
 string kRsrc_loginName "Username"
 string kRsrc_password "Password"
 string kRsrc_aboutTitle "About TwitPic..."
@@ -42,6 +44,7 @@ string kRsrc_twitpicMenu "Views"
 string kRsrc_error "There was an error..."
 string kRsrc_ClearTitle "Clear Photo?"
 string kRsrc_ClarText "Clear the currently selected photo?"
+string kRsrc_TakePhotoText "Take Photo or Choose Existing Photo?"
 string kRsrc_menuClearPhoto "Clear Photo"
 string kRsrc_menuSettings "Settings"
 string kRsrc_AppSettings "TwitPic Settings"
@@ -82,7 +85,7 @@ event EVENT_STATUS_ALERT
 #
 menu ID_URL_MENU
 	menuItem
-		title = "View Last Post"
+		title = kRsrc_menuLastPost
 		shortcut = 'l'
 		event = EVENT_OPEN_URL
 		icon = ID_GLOBE_ICON
@@ -144,6 +147,7 @@ menu ID_MAIN_MENU
 		title = kRsrc_menuLogin
 		event = EVENT_SETUP
 		id = ID_SETUP_LOGIN
+		shortcut = 'o'
 	divider
 	menuItem
 		title = kRsrc_menuAbout
@@ -338,24 +342,24 @@ endScreen
 ## Image Chooser type Alert
 #
 alert chooserAlert
-	title = "TwitPic"
+	title = kRsrc_AppTitle
 	icon = ID_LARGE_ICON
 	systemDialog
-	text = "Take Photo or Choose Existing Photo?"
+	text = kRsrc_TakePhotoText
 	button
 		position = buttonTop1
-		title = "Cancel"
+		title = kRsrc_cancel
 		shortcut = cancelButton
 		event = EVENT_CHOOSER_BACK
 	button
 		position = buttonBottom1
-		title = "Choose Photo"
+		title = kRsrc_ChoosePhotoButton
 		shortcut = backButton
 		event = EVENT_CHOOSE_PHOTO
 		defaultButton
 	button 
 		position = buttonBottom2
-		title = "Take Photo"
+		title = kRsrc_PhotoButton
 		event = EVENT_TAKE_PHOTO
 endAlert
 
@@ -363,18 +367,18 @@ endAlert
 ## No text entered alert
 #
 alert notextAlert
-	title = "TwitPic"
+	title = kRsrc_AppTitle
 	icon = ID_LARGE_ICON
 	systemDialog
 	text = "There was no text entered. This photo will not be posted to your TwitPic account but not Twitter."
 	button
 		position = buttonTop1
-		title = "Cancel"
+		title = kRsrc_cancel
 		shortcut = cancelButton
 		event = EVENT_CHOOSER_BACK
 	button
 		position = buttonBottom1
-		title = "Continue"
+		title = kRsrc_continue
 		shortcut = backButton
 		event = EVENT_POST_NO_TEXT
 		defaultButton
@@ -384,13 +388,13 @@ endAlert
 ## Copy alert
 #
 alert copyURLAlert
-	title = "TwitPic"
+	title = kRsrc_AppTitle
 	icon = ID_LARGE_ICON
 	systemDialog
 	text = "Would you like to copy the last TwitPic URL to the Clipboard?."
 	button
 		position = buttonTop1
-		title = "Cancel"
+		title = kRsrc_cancel
 		shortcut = cancelButton
 		event = EVENT_CHOOSER_BACK
 	button
@@ -474,21 +478,6 @@ alert ID_PASSWORD_ERROR
 endAlert
 
 #
-## Splash Screen
-#
-splashScreen ID_SPLASH_SCREEN_RESOURCE
-@ IF {screen} = wqvga
-wqvgaSplashScreen
-@ ELSEIF {screen} = qvga
-qvgaSplashScreen
-@ ENDIF
-image
-	bitmap = ID_SPLASH_SCREEN
-	alignWithParentLeft = 0
-	alignWithParentTop = 0
-endSplashScreen
-
-#
 ## Settings Dialog
 #
 dialog ID_SETTINGS
@@ -503,3 +492,18 @@ dialog ID_SETTINGS
 		description = kRsrc_ResizeDescription
 		center
 endDialog
+
+#
+## Splash Screen
+#
+splashScreen ID_SPLASH_SCREEN_RESOURCE
+@ IF {screen} = wqvga
+wqvgaSplashScreen
+@ ELSEIF {screen} = qvga
+qvgaSplashScreen
+@ ENDIF
+image
+	bitmap = ID_SPLASH_SCREEN
+	alignWithParentLeft = 0
+	alignWithParentTop = 0
+endSplashScreen
