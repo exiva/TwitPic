@@ -25,6 +25,7 @@ import danger.ui.photopicker.PhotoPicker;
 import danger.ui.ProgressWindow;
 import danger.ui.ScreenWindow;
 import danger.ui.Shortcut;
+import danger.ui.StaticText;
 import danger.ui.TextField;
 import danger.ui.TextInputAlertWindow;
 
@@ -38,6 +39,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 	DialogWindow dSettings;
 	ImageView tNoImage, iv;
 	MenuItem mClearPhoto, mCopyLast, mLastPost, mPost;
+	StaticText sRemaining;
 	private static Button tStatusButton, tPhotosButton;
 	public static boolean mPhotoSelec, isJPEG, menuClear, menuEnable;
 	public static byte[] photoData;
@@ -68,6 +70,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		tPhoto = (Button)this.getDescendantWithID(PICTURE_BUTTON);
 		bodyField = (EditText) getChildWithID(BODY_TEXT);
 		tResize = (CheckBox)dSettings.getDescendantWithID(RESIZE_IMAGE);
+		sRemaining = (StaticText)this.getDescendantWithID(S_REMAINING);
 		tNoImage.show();
 		tLastPost.disable();
 		tPost.disable();
@@ -338,6 +341,10 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			}
 			case EVENT_CHOOSER_BACK: {
 				tChooser.hide();
+				return true;
+			}
+			case EVENT_TEXT_CHANGED: {
+				sRemaining.setText(Integer.toString(140 - bodyField.length())+" Characters Remaining");
 				return true;
 			}
 			case EVENT_COPY_URL: {

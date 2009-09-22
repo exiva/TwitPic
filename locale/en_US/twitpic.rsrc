@@ -182,6 +182,7 @@ screen ID_MAIN_SCREEN
 	editText
 		id = BODY_TEXT
 		labelWhenEmpty = kRsrc_bodyText
+		event = EVENT_TEXT_CHANGED
 		maxLength = 140
 		fillToRight = 5
 		heightPct = 50
@@ -212,6 +213,14 @@ screen ID_MAIN_SCREEN
 		@ ENDIF
 		alignRight = BODY_TEXT
 		iconAlignLeft
+	staticText
+		id = S_REMAINING
+		text = "140 Characters Remaining"
+		# @ IF {screen} = fwvga
+		positionBelow = BODY_TEXT : 5
+		alignRight = BODY_TEXT
+		justifyRight	
+		transparent
 	image
 		bitmap = ID_IMAGE_AREA
 		id = IMAGE_SPACE
