@@ -31,6 +31,7 @@ string kRsrc_menuPhoto "Take Photo"
 string kRsrc_menuPost "Post It"
 string kRsrc_menuAbout "About TwitPic"
 string kRsrc_menuLastPost "View Last Post"
+string kRsrc_MenuTips "Tips"
 string kRsrc_login "Login"
 string kRsrc_cancel "Cancel"
 string kRsrc_continue "Continue"
@@ -152,6 +153,10 @@ menu ID_MAIN_MENU
 	menuItem
 		title = kRsrc_menuAbout
 		event = ABOUT
+	divider
+	menuItem
+		title = kRsrc_MenuTips
+		event = EVENT_TIPS
 endMenu
 
 #
@@ -500,6 +505,38 @@ dialog ID_SETTINGS
 		title = kRsrc_ResizeImage
 		description = kRsrc_ResizeDescription
 		center
+endDialog
+
+#
+## Tips Dialog
+#
+dialog helpDialog
+	title = kRsrc_AppTitle+" Tips"
+	doneEvent = evtDone
+	doneIsDefault
+	widthPct = 90
+	heightPct = 90
+	scrollView
+		id = ID_HELP_SCROLLER
+		alignWithParentTop = 0
+		alignWithParentLeft = 0
+		widthPct = 100
+		heightPct = 100
+		initialFocus
+
+		staticTextBox
+		id = ID_HELP_TEXT
+		alignWithParentTop = 0
+		alignWithParentLeft = 3
+		fillToRight = 0
+		doesNotHaveBorder
+		text =  "<html><li>Selecting ‘Take Photo’ will allow you to take a photo with the Camera, or select an existing photo from your Image Gallery.</li><br /><br />" +
+				"<li>Select (Menu button) > Settings and enable ‘Resize Image’ to conserve battery and post images faster by shrinking them down.</li><br /><br />" +
+				"<li>If you leave the update text blank, your post will not be posted to your twitter account. Instead you will be given the option to Copy the link to your post. From there you can paste it into an email, IM conversation, or post it to Twitter via SMS, Browser, or Danger’s Twitter application.</li><br /><br />" +
+				"<li>The update text accompanying your photo can be no longer than 140 characters</li><br /><br />" +
+				"<br /><b>Support</b><br />" +
+				"If you require support, contact support at <font color=\"blue\"><b>support@crampedthumbs.com</b></font></html>"
+	endScrollView
 endDialog
 
 #

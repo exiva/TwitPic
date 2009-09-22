@@ -33,10 +33,10 @@ import danger.util.Pasteboard;
 import danger.util.DEBUG;
 
 public class twitpicView extends ScreenWindow implements Resources, Commands {
-	AlertWindow tChooser, tClear, tCopyURL, tNoText, tPosting, tError;
+	AlertWindow tAbout, tChooser, tClear, tCopyURL, tNoText, tPosting, tError;
 	Button tLastPost, tPhoto, tPost;
 	CheckBox tResize;
-	DialogWindow dSettings;
+	DialogWindow dSettings, dTips;
 	ImageView tNoImage, iv;
 	MenuItem mClearPhoto, mCopyLast, mLastPost, mPost;
 	StaticText sRemaining;
@@ -71,6 +71,8 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		bodyField = (EditText) getChildWithID(BODY_TEXT);
 		tResize = (CheckBox)dSettings.getDescendantWithID(RESIZE_IMAGE);
 		sRemaining = (StaticText)this.getDescendantWithID(S_REMAINING);
+		tAbout = getApplication().getAlert(ID_ABOUT, this);
+		dTips = getApplication().getDialog(helpDialog, this);
 		tNoImage.show();
 		tLastPost.disable();
 		tPost.disable();
@@ -361,8 +363,11 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				return true;
 			}
 			case ABOUT: {
-				AlertWindow about = getApplication().getAlert(ID_ABOUT, this);
-				about.show();
+				tAbout.show();
+				return true;
+			}
+			case EVENT_TIPS: {
+				dTips.show();
 				return true;
 			}
 			default:
