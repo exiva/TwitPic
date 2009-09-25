@@ -220,7 +220,7 @@ screen ID_MAIN_SCREEN
 		iconAlignLeft
 	staticText
 		id = S_REMAINING
-		text = "140 Characters Remaining"
+		text = "140 Chars left"
 		# @ IF {screen} = fwvga
 		positionBelow = BODY_TEXT : 5
 		alignRight = BODY_TEXT
