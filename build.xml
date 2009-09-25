@@ -7,11 +7,11 @@
     <property name="APP_PACKAGE_NAME" value="net.exiva.twitpic"/>
 
 	<!-- Blade - T-Mo US -->
-	<property name="VERSION" value="5.0"/>
-	<property name="BUILD" value="265811" />
+	<!-- <property name="VERSION" value="5.0"/>
+	<property name="BUILD" value="265811" /> -->
 	<!-- Shuriken - T-Mo US - Post OTA -->
-	<!-- <property name="VERSION" value="4.6"/>
-	<property name="BUILD" value="231400" /> -->
+	<property name="VERSION" value="4.6"/>
+	<property name="BUILD" value="231400" />
 	<!-- Style2 - T-Mo US - Post OTA -->
 	<!-- <property name="VERSION" value="4.7"/>
 	<property name="BUILD" value="231400" /> -->
@@ -27,7 +27,7 @@
 
 	<property name="APP_VERSION_MAJOR" value="1"/>
 	<property name="APP_VERSION_MINOR" value="0"/>
-	<property name="APP_VERSION_BUILD" value="36"/>
+	<property name="APP_VERSION_BUILD" value="37"/>
 
 	<import file="${DANGER_HOME}/tools/proguard.xml"/> 
 	<import file="${DANGER_HOME}/tools/build_common.xml"/>
