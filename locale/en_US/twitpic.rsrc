@@ -185,6 +185,8 @@ screen ID_MAIN_SCREEN
 		iconAlignLeft
 		left = 5
 		iconAlignLeft
+		positionDynamically
+		resizeDynamically
 	editText
 		id = BODY_TEXT
 		labelWhenEmpty = kRsrc_bodyText
@@ -204,6 +206,8 @@ screen ID_MAIN_SCREEN
 		@ ENDIF
 		autoText
 		justifyLeft
+		positionDynamically
+		resizeDynamically
 	button
 		event = EVENT_OPEN_URL
 		id = LAST_POST
@@ -219,6 +223,8 @@ screen ID_MAIN_SCREEN
 		@ ENDIF
 		alignRight = BODY_TEXT
 		iconAlignLeft
+		positionDynamically
+		resizeDynamically
 	staticText
 		id = S_REMAINING
 		text = "140 Chars left"
@@ -227,6 +233,8 @@ screen ID_MAIN_SCREEN
 		alignRight = BODY_TEXT
 		justifyRight	
 		transparent
+		positionDynamically
+		resizeDynamically
 	image
 		bitmap = ID_IMAGE_AREA
 		id = IMAGE_SPACE
@@ -237,6 +245,8 @@ screen ID_MAIN_SCREEN
 		@ ELSEIF {screen} = qvga
 		positionBelow = BODY_TEXT : 5
 		@ ENDIF
+		positionDynamically
+		resizeDynamically
 	image
 		bitmap = ID_NO_IMAGE
 		id = NO_IMAGE
@@ -250,6 +260,8 @@ screen ID_MAIN_SCREEN
 		positionBelow = BODY_TEXT : 9
 		left = 14
 		@ ENDIF
+		positionDynamically
+		resizeDynamically
 	button
 		event = EVENT_POST
 		id = POST_BUTTON
@@ -262,6 +274,8 @@ screen ID_MAIN_SCREEN
 		@ ELSEIF {screen} = qvga
 		alignWithParentBottom = 26
 		@ ENDIF
+		positionDynamically
+		resizeDynamically
 endScreen
 
 #
@@ -292,6 +306,7 @@ screen ID_LOGIN_SCREEN
 		bitmap = ID_LOGO
 		alignWithParentTop = 10
 		centerHorizontally
+		positionDynamically
 	roundRectContainer
 		id = ID_ROUND_CONTAINER
 		positionBelow = LOGO : 15
@@ -301,6 +316,8 @@ screen ID_LOGIN_SCREEN
 		heightPct = 30
 		frameColor = 0x00FFFFFF
 		fillColor = defaultPaneColor
+		positionDynamically
+		resizeDynamically
 	staticText
 		id = LBL_USERNAME
 		text = kRsrc_loginName
@@ -313,21 +330,29 @@ screen ID_LOGIN_SCREEN
 		@ ENDIF
 		alignWithParentLeft = 5
 		transparent
+		positionDynamically
+		resizeDynamically
 	textField
 		id = ID_USERNAME
 		positionToRight = LBL_USERNAME : 5
 		fillToRight = 5
 		initialFocus
+		positionDynamically
+		resizeDynamically
 	textField
 		id = ID_PASSWORD
 		positionBelow = ID_USERNAME : 5
 		fillToRight = 5
 		passwordField
+		positionDynamically
+		resizeDynamically
 	staticText
 		id = LBL_PASSWORD
 		text = kRsrc_password
 		positionToLeft = ID_PASSWORD : 5
 		transparent
+		positionDynamically
+		resizeDynamically
 	endRoundRectContainer
 	progressBar
 		initialValue = -1
@@ -338,19 +363,15 @@ screen ID_LOGIN_SCREEN
 		width = 200
 		invisible
 		id = ID_THROBBER
+		positionDynamically
 	button
 		event = EVENT_STORE_LOGIN
 		id = ID_LOGIN_BUTTON
 		positionBelow = ID_ROUND_CONTAINER : 20
 		alignRight = ID_ROUND_CONTAINER
 		title = kRsrc_login
-	button
-		event = EVENT_CANCEL_LOGIN
-		id = ID_CANCEL_BUTTON
-		positionBelow = ID_ROUND_CONTAINER : 20
-		alignRight = ID_ROUND_CONTAINER
-		title = kRsrc_cancel
-		invisible
+		positionDynamically
+		resizeDynamically
 endScreen
 
 #
