@@ -29,7 +29,7 @@ string kRsrc_postButton "Post It"
 string kRsrc_menuLogin "Log Out"
 string kRsrc_menuPhoto "Take Photo"
 string kRsrc_menuPost "Post It"
-string kRsrc_menuAbout "About TwitPic"
+string kRsrc_menuAbout "About Twitpic"
 string kRsrc_menuLastPost "View Last Post"
 string kRsrc_MenuTips "Tips"
 string kRsrc_login "Login"
@@ -37,7 +37,7 @@ string kRsrc_cancel "Cancel"
 string kRsrc_continue "Continue"
 string kRsrc_loginName "Username"
 string kRsrc_password "Password"
-string kRsrc_aboutTitle "About TwitPic..."
+string kRsrc_aboutTitle "About Twitpic..."
 string kRsrc_twitpicHome "twitpic.com"
 string kRsrc_yourProfile "Your Profile"
 string kRsrc_publicTimeline "Public Timeline"
@@ -48,10 +48,10 @@ string kRsrc_ClarText "Clear the currently selected photo?"
 string kRsrc_TakePhotoText "Take Photo or Choose Existing Photo?"
 string kRsrc_menuClearPhoto "Clear Photo"
 string kRsrc_menuSettings "Settings"
-string kRsrc_AppSettings "TwitPic Settings"
+string kRsrc_AppSettings "Twitpic Settings"
 string kRsrc_ResizeImage "Resize Image?"
 string kRsrc_ResizeDescription "This will resize the image on upload, making the upload faster and use less battery."
-string kRsrc_copy "Copy last TwitPic"
+string kRsrc_copy "Copy last Twitpic"
 
 #
 ## Bitmaps
@@ -120,6 +120,12 @@ menu ID_MAIN_MENU
 		shortcut = rightShoulderButton
 	divider
 	menuItem
+		title = kRsrc_menuClearPhoto
+		event = EVENT_MENU_CLEAR
+		icon = trashIcon
+		id = ID_MENUCLEAR
+	divider
+	menuItem
 		title = kRsrc_twitpicMenu
 		subMenu = ID_URL_MENU
 		id = ID_URLMENU
@@ -129,11 +135,6 @@ menu ID_MAIN_MENU
 		event = EVENT_COPY_URL
 		id = ID_COPY_LAST
 		disabled
-	divider
-		title = kRsrc_menuClearPhoto
-		event = EVENT_MENU_CLEAR
-		icon = trashIcon
-		id = ID_MENUCLEAR
 	menuItem
 		title = kRsrc_menuPost
 		event = EVENT_POST
@@ -384,7 +385,7 @@ alert notextAlert
 	title = kRsrc_AppTitle
 	icon = ID_LARGE_ICON
 	systemDialog
-	text = "There was no text entered. This photo will not be posted to your TwitPic account but not Twitter."
+	text = "There was no text entered. This photo will not be posted to your Twitpic account but not Twitter."
 	button
 		position = buttonTop1
 		title = kRsrc_cancel
@@ -405,7 +406,7 @@ alert copyURLAlert
 	title = kRsrc_AppTitle
 	icon = ID_LARGE_ICON
 	systemDialog
-	text = "Would you like to copy the last TwitPic URL to the Clipboard?."
+	text = "Would you like to copy the last Twitpic URL to the Clipboard?."
 	button
 		position = buttonTop1
 		title = kRsrc_cancel
