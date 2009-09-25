@@ -30,7 +30,7 @@ import danger.ui.TextField;
 import danger.ui.TextInputAlertWindow;
 
 import danger.util.Pasteboard;
-import danger.util.DEBUG;
+// import danger.util.DEBUG;
 
 public class twitpicView extends ScreenWindow implements Resources, Commands {
 	AlertWindow tAbout, tChooser, tClear, tCopyURL, tNoText, tPosting, tError;
@@ -174,8 +174,6 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				photoData = new byte[len];
 				System.arraycopy(tmp, 0, photoData, 0, len);
 				photoSize = photoData.length;
-
-				DEBUG.p("Photo Size: "+photoSize);
 			} else {
 				//4.6+
 				photoData = record.getData();
@@ -188,9 +186,9 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			//5.0
 			iv = new ImageView(record.getBitmap(180,145));
 			//4.6-4.7
-			// iv = new ImageView(record.getBitmap(63,51));
+			// iv = new ImageView(record.getBitmap(91,74));
 			//legacy
-			// iv = new ImageView(record.getThumbnailBitmapWithHints(63,51));
+			// iv = new ImageView(record.getThumbnailBitmapWithHints(91,74));
 			//<5.0
 			// iv.setPosition(9,122);
 			// iv.setSize(63,51);
@@ -231,7 +229,6 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 
 	public void setBody(String body) {
 		bodyField.setText(body);
-		// showPhotoPicker();
 		tChooser.show();
 	}
 
@@ -346,7 +343,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				return true;
 			}
 			case EVENT_TEXT_CHANGED: {
-				sRemaining.setText(Integer.toString(140 - bodyField.length())+" Characters Remaining");
+				sRemaining.setText(Integer.toString(140 - bodyField.length())+" Chars left");
 				return true;
 			}
 			case EVENT_COPY_URL: {
