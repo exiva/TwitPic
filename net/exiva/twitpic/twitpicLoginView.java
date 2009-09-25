@@ -11,6 +11,7 @@ import danger.ui.ScreenWindow;
 import danger.ui.TextField;
 
 public class twitpicLoginView extends ScreenWindow implements Resources, Commands {
+	private static AlertWindow tError;
 	private static Button login;
 	private static TextField username, password;
 	private static ProgressBar throbber;
@@ -25,6 +26,7 @@ public class twitpicLoginView extends ScreenWindow implements Resources, Command
 		password = (TextField)this.getDescendantWithID(ID_PASSWORD);
 		throbber = (ProgressBar)this.getChildWithID(ID_THROBBER);
 		login = (Button)this.getDescendantWithID(ID_LOGIN_BUTTON);
+		tError = getApplication().getAlert(ID_SUBMIT_ERROR, this);
 	}
 
 	public static twitpicLoginView create() {
@@ -72,8 +74,13 @@ public class twitpicLoginView extends ScreenWindow implements Resources, Command
 				return false;
 			}
 			case EVENT_STORE_LOGIN: {
-				twitpic.checkAuth(username.toString(), password.toString());
-				disableInput();
+				if (username.toString().equals("") || password.toString().equals("")) {
+					tError.setMessage("Either your username or password was left blank.");
+					tError.show();
+				} else {
+					twitpic.checkAuth(username.toString(), password.toString());
+					disableInput();
+				}
 				return true;
 			}
 			case ABOUT: {
