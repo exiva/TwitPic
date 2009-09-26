@@ -21,10 +21,7 @@ string kRsrc_AppTitle "Twitpic"
 string kRsrc_PhotoButton "Take Photo"
 string kRsrc_ChoosePhotoButton "Choose Photo"
 string kRsrc_lastPost "View Last Post"
-string kRsrc_bodyText "Type your update message (Max 140 characters)"
-@ IF {screen} = qvga
 string kRsrc_bodyText "Type your update message"
-@ ENDIF
 string kRsrc_postButton "Post It"
 string kRsrc_menuLogin "Log Out"
 string kRsrc_menuPhoto "Take Photo"
