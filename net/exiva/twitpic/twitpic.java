@@ -13,13 +13,10 @@ import danger.app.Registrar;
 
 import danger.audio.Meta;
 
-import danger.crypto.MD5;
-
 import danger.mime.Base64;
 
 import danger.net.HTTPConnection;
 import danger.net.HTTPTransaction;
-import danger.net.HiptopConnection;
 
 import danger.ui.AlertWindow;
 import danger.ui.DialogWindow;
