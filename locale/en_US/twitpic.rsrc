@@ -177,9 +177,7 @@ screen ID_MAIN_SCREEN
 		initialFocus
 		@ IF {screen} = fwvga
 		top = 17
-		@ ELSEIF {screen} = wqvga
-		top = 5
-		@ ELSEIF {screen} = qvga
+		@ ELSE
 		top = 5
 		@ ENDIF
 		iconAlignLeft
@@ -199,9 +197,7 @@ screen ID_MAIN_SCREEN
 		advanceFocusOnReturn
 		@ IF {screen} = fwvga
 		positionBelow = PICTURE_BUTTON : 10
-		@ ELSEIF {screen} = wqvga
-		positionBelow = PICTURE_BUTTON : 5
-		@ ELSEIF {screen} = qvga
+		@ ELSE
 		positionBelow = PICTURE_BUTTON : 5
 		@ ENDIF
 		autoText
@@ -216,13 +212,10 @@ screen ID_MAIN_SCREEN
 		icon = ID_GLOBE_ICON
 		@ IF {screen} = fwvga
 		top = 16
-		@ ELSEIF {screen} = wqvga
-		top = 5
-		@ ELSEIF {screen} = qvga
+		@ ELSE
 		top = 5
 		@ ENDIF
 		alignRight = BODY_TEXT
-		iconAlignLeft
 		positionDynamically
 		resizeDynamically
 	staticText
@@ -240,28 +233,21 @@ screen ID_MAIN_SCREEN
 		id = IMAGE_SPACE
 		@ IF {screen} = fwvga
 		positionBelow = BODY_TEXT : 10
-		@ ELSEIF {screen} = wqvga
-		positionBelow = BODY_TEXT : 5
-		@ ELSEIF {screen} = qvga
+		@ ELSE
 		positionBelow = BODY_TEXT : 5
 		@ ENDIF
 		positionDynamically
-		resizeDynamically
 	image
 		bitmap = ID_NO_IMAGE
 		id = NO_IMAGE
 		@ IF {screen} = fwvga
 		positionBelow = BODY_TEXT : 14
 		left = 25
-		@ ELSEIF {screen} = wqvga
-		positionBelow = BODY_TEXT : 9
-		left = 14
-		@ ELSEIF {screen} = qvga
+		@ ELSE
 		positionBelow = BODY_TEXT : 9
 		left = 14
 		@ ENDIF
 		positionDynamically
-		resizeDynamically
 	button
 		event = EVENT_POST
 		id = POST_BUTTON
@@ -269,9 +255,7 @@ screen ID_MAIN_SCREEN
 		alignRight = BODY_TEXT
 		@ IF {screen} = fwvga
 		alignWithParentBottom = 17
-		@ ELSEIF {screen} = wqvga
-		alignWithParentBottom = 26
-		@ ELSEIF {screen} = qvga
+		@ ELSE
 		alignWithParentBottom = 26
 		@ ENDIF
 		positionDynamically
@@ -323,9 +307,7 @@ screen ID_LOGIN_SCREEN
 		text = kRsrc_loginName
 		@ IF {screen} = fwvga
 		alignWithParentTop = 17
-		@ ELSEIF {screen} = wqvga
-		alignWithParentTop = 6
-		@ ELSEIF {screen} = qvga
+		@ ELSE
 		alignWithParentTop = 6
 		@ ENDIF
 		alignWithParentLeft = 5
