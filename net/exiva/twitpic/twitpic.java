@@ -54,7 +54,10 @@ public class twitpic extends Application implements Resources, Commands {
 		aPassword = Application.getCurrentApp().getResources().getAlert(ID_PASSWORD_ERROR, this);
 		aError = Application.getCurrentApp().getResources().getAlert(ID_SUBMIT_ERROR, this);
 		//register a provider to get into the photo picker
+		//4.6+
 		Registrar.registerProvider("send-via", this, 1, Application.getCurrentApp().getResources().getBitmap(ID_MARQUEE), "TwitPic", 'T', Registrar.DATA_TYPE_FLAG_PHOTO_RECORD);
+		//legacy
+		// Registrar.registerProvider("send-via", this, 1, Application.getCurrentApp().getResources().getBitmap(ID_MARQUEE), "TwitPic", 'T');
 	}
 
 	public void launch() {
@@ -241,7 +244,10 @@ public class twitpic extends Application implements Resources, Commands {
 	}
 
 	public void handleMessage(IPCMessage ipcmessage, int i) {
+		//4.6+
 		mWindow.showSelectedPhotos(ipcmessage.findGalleryItemIPCPayload("photo-records"));
+		//legacy
+		// mWindow.showSelectedPhotos(ipcmessage.findPhotoRecordIPCPayload("photo-records"));
 		Bundle twitpic = Bundle.findByClassName("net.exiva.twitpic.twitpic");
 		Registrar.bringToForeground(twitpic);
 	}
