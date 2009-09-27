@@ -155,7 +155,10 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			//legacy
 			// PhotoRecord record = photos.getRecordAt(i);
 			photoname = record.getName();
+			//4.6+
 			mimeData = record.getMimeType();
+			//legacy -- bad coding, we're assuming it's a JPG. Sorry.
+			// mimeData = "image/jpeg";
 			if (resize == 1 && record.getWidth() > 640 && record.getHeight() > 480 || resize == 1 && record.getWidth() > 480 && record.getHeight() > 640) {
 				int width=record.getWidth()/2;
 				int height=record.getHeight()/2;
@@ -191,11 +194,11 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			// iv = new ImageView(record.getThumbnailBitmapWithHints(91,74));
 			//<5.0
 			// iv.setPosition(9,122);
-			// iv.setSize(63,51);
+			// iv.setSize(91,74);
 			//5.0
 			iv.setPosition(10,235);
 			iv.setSize(180,145);
-			//4.6
+			//4.6+
 			iv.setAutoScale(true,true);
 			//legacy
 			// iv.setAutoScale(true,false);
