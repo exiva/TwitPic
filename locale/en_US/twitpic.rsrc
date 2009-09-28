@@ -501,11 +501,32 @@ dialog ID_SETTINGS
 	doneEvent = EVENT_SETTINGS_DONE
 	doneIsDefault
 	center
+	radioButtonGroup
+		id = ID_SERVICE
+		alignWithParentTop = 0
+		alignWithParentLeft = 5
+		fillToRight = 5
+		positionDynamically
+		resizeDynamically
+		title = "Photo Service"
+			radioButton	## <widget-options> See complete list in file header.
+				title = "Twitpic"
+			radioButton
+				title = "Twitgoo"
+			radioButton
+				title = "yfrog"
+			radioButton
+				title = "img.ly"
+			radioButton
+				title = "Pikchur"
+	endRadioButtonGroup
 	checkBox
 		id = RESIZE_IMAGE
+		positionBelow = ID_SERVICE : 5
 		title = kRsrc_ResizeImage
 		description = kRsrc_ResizeDescription
-		center
+		positionDynamically
+		resizeDynamically
 endDialog
 
 #
