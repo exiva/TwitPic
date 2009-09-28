@@ -23,6 +23,7 @@ import danger.ui.Menu;
 import danger.ui.MenuItem;
 import danger.ui.photopicker.PhotoPicker;
 import danger.ui.ProgressWindow;
+import danger.ui.RadioGroup;
 import danger.ui.ScreenWindow;
 import danger.ui.Shortcut;
 import danger.ui.StaticText;
@@ -30,7 +31,6 @@ import danger.ui.TextField;
 import danger.ui.TextInputAlertWindow;
 
 import danger.util.Pasteboard;
-// import danger.util.DEBUG;
 
 public class twitpicView extends ScreenWindow implements Resources, Commands {
 	AlertWindow tAbout, tChooser, tClear, tCopyURL, tNoText, tPosting, tError;
@@ -40,11 +40,12 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 	ImageView tNoImage, iv;
 	MenuItem mClearPhoto, mCopyLast, mLastPost, mPost;
 	StaticText sRemaining;
+	RadioGroup mService;
 	private static Button tStatusButton, tPhotosButton;
 	public static boolean mPhotoSelec, isJPEG, menuClear, menuEnable;
 	public static byte[] photoData;
 	private static EditText bodyField;
-	public static int photoSize, width, height, resize;
+	public static int photoSize, width, height, resize, service;
 	public ProgressWindow postProgress;
 	public static String mimeData, photoname, lastPost;
 
@@ -70,6 +71,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		tPhoto = (Button)this.getDescendantWithID(PICTURE_BUTTON);
 		bodyField = (EditText) getChildWithID(BODY_TEXT);
 		tResize = (CheckBox)dSettings.getDescendantWithID(RESIZE_IMAGE);
+		mService = (RadioGroup)dSettings.getDescendantWithID(ID_SERVICE);
 		sRemaining = (StaticText)this.getDescendantWithID(S_REMAINING);
 		tAbout = getApplication().getAlert(ID_ABOUT, this);
 		dTips = getApplication().getDialog(helpDialog, this);
@@ -101,9 +103,11 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 		}
 	}
 
-	public void setResize(int rsz) {
+	public void restoreSettings(int rsz, int svc) {
 		resize = rsz;
+		service = svc;
 		tResize.setValue(rsz);
+		mService.setValue(svc);
 	}
 	
 	public void changeState(int state) {
@@ -354,8 +358,9 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				return true;
 			}
 			case EVENT_SETTINGS_DONE: {
-				twitpic.setResize(tResize.getValue());
+				twitpic.setSettings(tResize.getValue(), mService.getValue());
 				resize=tResize.getValue();
+				service=mService.getValue();
 				return true;
 			}
 			case EVENT_SETTINGS: {

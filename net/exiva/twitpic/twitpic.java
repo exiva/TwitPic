@@ -36,10 +36,15 @@ import org.xmlpull.v1.XmlPullParserException;
 public class twitpic extends Application implements Resources, Commands {
 	public boolean firstLaunch = true;
 	private static boolean mIsAppForeground;
-	public static int rsz;
+	public static int rsz, svc;
 	MarqueeAlert mMarquee;
+	public static byte[] end;
 	public static SettingsDB twitpicPrefs;
-	static private String error, password, postStatus, tagName, text, uploadurl = "http://twitpic.com/api/upload", uploadandposturl = "http://twitpic.com/api/uploadAndPost", username, className, source = "hiptop";
+	static private String error, password, postStatus, tagName, text, upload = "/api/upload", uploadandpost = "/api/uploadAndPost", username, className, host, source = "hiptop";
+	static private String twitpic = "http://twitpic.com";
+	static private String twitgoo = "http://twitgoo.com";
+	static private String yfrog = "http://yfrog.com";
+	static private String yfrogAPIKey = "235KMOQUd4fa0560aafa8082876a2328a6c7ac59";
 	static public twitpicView mWindow;
 	static public twitpicLoginView mLogin;
 	AlertWindow aError, aPassword, aWelcome;
@@ -84,9 +89,10 @@ public class twitpic extends Application implements Resources, Commands {
 			password = twitpicPrefs.getStringValue("password");
 			try {
 			rsz = twitpicPrefs.getIntValue("resize");
+			svc = twitpicPrefs.getIntValue("service");
 			} catch (SettingsDBException exception) {}
 			mLogin.setLogin(username, password);
-			mWindow.setResize(rsz);
+			mWindow.restoreSettings(rsz, svc);
 			checkAuth(username, password);
 		}
 	}
@@ -99,8 +105,10 @@ public class twitpic extends Application implements Resources, Commands {
 		password = inPass;
 	}
 
-	public static void setResize(int resize) {
+	public static void setSettings(int resize, int service) {
 		twitpicPrefs.setIntValue("resize", resize);
+		twitpicPrefs.setIntValue("service", service);
+		svc=service;
 	}
 	
 	public static void checkAuth(String inUser, String inPass) {
@@ -112,6 +120,17 @@ public class twitpic extends Application implements Resources, Commands {
 	}
 
 	public static void postEntryToTwitter(String body, byte[] oJPEG, String filename, int size, String mime) {
+		switch(svc) {
+			case 1:
+				host = twitgoo+uploadandpost;
+			break;
+			case 2:
+				host = yfrog+uploadandpost;
+			break;
+			default:
+				host = twitpic+uploadandpost;
+			break;
+		}
 		byte[] start = new String("--AaB03x\r\n" +
 		   					"Content-Disposition: form-data; name=\"username\"\r\n" +
 							"\r\n" +
@@ -129,11 +148,24 @@ public class twitpic extends Application implements Resources, Commands {
 							"\r\n" +
 							source+"\r\n" +
 							"--AaB03x\r\n" +
+							"Content-Disposition: form-data; name=\"key\"\r\n" +
+							"\r\n" +
+							yfrogAPIKey+"\r\n" +
+							"--AaB03x\r\n" +
 							"content-disposition: form-data; name=\"media\"; filename=\""+filename+"\"\r\n" +
 							"Content-Type: "+mime+"\r\n" +
 							"\r\n").getBytes();
-		byte[] end = new String("\r\n" +
-							"--AaB03x--").getBytes();
+		if (svc==2) {
+			end = new String("\r\n" +
+									"--AaB03x--"+
+									"Content-Disposition: form-data; name=\"key\"\r\n" +
+									"\r\n" +
+									yfrogAPIKey+"\r\n" +
+									"--AaB03x\r\n").getBytes();
+		} else {
+			end = new String("\r\n" +
+								"--AaB03x--").getBytes();
+		}
 												
 		byte[] body2 = new byte[start.length + oJPEG.length + end.length];
 		System.arraycopy(start, 0, body2, 0, start.length);
@@ -144,10 +176,21 @@ public class twitpic extends Application implements Resources, Commands {
 						"User-Agent: Danger Hiptop v1.0/30\r\n" +
 						"Content-length: " + body2.length;
 
-		HTTPConnection.post(uploadandposturl, headers, body2, (short) 0, 1);
+		HTTPConnection.post(host, headers, body2, (short) 0, 1);
 	}
 
 	public static void postEntryToTwitpic(byte[] oJPEG, String filename, int size, String mime) {
+		switch(svc) {
+			case 1:
+				host = twitgoo+upload;
+			break;
+			case 2:
+				host = yfrog+upload;
+			break;
+			default:
+				host = twitpic+upload;
+			break;
+		}
 		byte[] start = new String("--AaB03x\r\n" +
 		   					"Content-Disposition: form-data; name=\"username\"\r\n" +
 							"\r\n" +
@@ -161,11 +204,25 @@ public class twitpic extends Application implements Resources, Commands {
 							"\r\n" +
 							source+"\r\n" +
 							"--AaB03x\r\n" +
+	   						"Content-Disposition: form-data; name=\"key\"\r\n" +
+							"\r\n" +
+							yfrogAPIKey+"\r\n" +
+							"--AaB03x\r\n" +
 							"content-disposition: form-data; name=\"media\"; filename=\""+filename+"\"\r\n" +
 							"Content-Type: "+mime+"\r\n" +
 							"\r\n").getBytes();
-		byte[] end = new String("\r\n" +
-							"--AaB03x--").getBytes();
+		if (svc==2) {
+			DEBUG.p("Service is yFrog.");
+			end = new String("\r\n" +
+									"--AaB03x--"+
+									"Content-Disposition: form-data; name=\"key\"\r\n" +
+									"\r\n" +
+									yfrogAPIKey+"\r\n" +
+									"--AaB03x\r\n").getBytes();
+		} else {
+			end = new String("\r\n" +
+								"--AaB03x--").getBytes();
+		}
 												
 		byte[] body2 = new byte[start.length + oJPEG.length + end.length];
 		System.arraycopy(start, 0, body2, 0, start.length);
@@ -176,7 +233,7 @@ public class twitpic extends Application implements Resources, Commands {
 						"User-Agent: Danger Hiptop v1.0/30\r\n" +
 						"Content-length: " + body2.length;
 
-		HTTPConnection.post(uploadurl, headers, body2, (short) 0, 2);
+		HTTPConnection.post(host, headers, body2, (short) 0, 2);
 	}
 	
 	public void parsePostResponse(String response, boolean copy) {
