@@ -293,14 +293,14 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 						tNoText.show();
 					} else {
 						//text, it's normal!
-						twitpic.postEntryToTwitter(bodyField.toString(),photoData,photoname,photoSize,mimeData);
+						twitpic.uploadandpost(bodyField.toString(),photoData,photoname,photoSize,mimeData);
 						tPosting.show();
 					}					
 				}
 				return true;
 			}
 			case EVENT_POST_NO_TEXT: {
-				twitpic.postEntryToTwitpic(photoData,photoname,photoSize, mimeData);
+				twitpic.upload(photoData,photoname,photoSize, mimeData);
 				tPosting.show();
 				return true;
 			}

@@ -119,7 +119,7 @@ public class twitpic extends Application implements Resources, Commands {
 		HTTPConnection.get("http://twitter.com/account/verify_credentials.json", "Authorization: Basic "+twitterLogin, (short) 0, 3);
 	}
 
-	public static void postEntryToTwitter(String body, byte[] oJPEG, String filename, int size, String mime) {
+	public static void uploadandpost(String body, byte[] oJPEG, String filename, int size, String mime) {
 		switch(svc) {
 			case 1:
 				host = twitgoo+uploadandpost;
@@ -179,7 +179,7 @@ public class twitpic extends Application implements Resources, Commands {
 		HTTPConnection.post(host, headers, body2, (short) 0, 1);
 	}
 
-	public static void postEntryToTwitpic(byte[] oJPEG, String filename, int size, String mime) {
+	public static void upload(byte[] oJPEG, String filename, int size, String mime) {
 		switch(svc) {
 			case 1:
 				host = twitgoo+upload;
