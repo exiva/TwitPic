@@ -515,10 +515,6 @@ dialog ID_SETTINGS
 				title = "Twitgoo"
 			radioButton
 				title = "yfrog"
-			radioButton
-				title = "img.ly"
-			radioButton
-				title = "Pikchur"
 	endRadioButtonGroup
 	checkBox
 		id = RESIZE_IMAGE
