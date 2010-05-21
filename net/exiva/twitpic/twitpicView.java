@@ -31,6 +31,7 @@ import danger.ui.TextField;
 import danger.ui.TextInputAlertWindow;
 
 import danger.util.Pasteboard;
+import danger.util.DEBUG;
 
 public class twitpicView extends ScreenWindow implements Resources, Commands {
 	AlertWindow tAbout, tChooser, tClear, tCopyURL, tNoText, tPosting, tError;
@@ -211,7 +212,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 					addChild(iv);
 					tNoImage.hide();
 					iv.show();
-			} else {
+			} else if (record.isVideo()) {
 				photoData = record.getData();
 				photoSize = record.getDataSize();
 				// mimeData = record.getMimeType();
@@ -219,6 +220,8 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				DEBUG.p("Video Data: "+record.getData());
 				DEBUG.p("Video Size: "+record.getDataSize());
 				// DEBUG.p("MIME Data: "+record.getMimeType());
+			} else {
+				DEBUG.p("What the hell did you feed me?");
 			}
 			menuClear = true;
 			changeState(1);
