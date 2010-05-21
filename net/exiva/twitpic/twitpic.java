@@ -33,6 +33,10 @@ import java.io.IOException;
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+
 public class twitpic extends Application implements Resources, Commands {
 	public boolean firstLaunch = true;
 	private static boolean mIsAppForeground;
