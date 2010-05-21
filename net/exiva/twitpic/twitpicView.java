@@ -161,54 +161,65 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 			photoname = record.getName();
 			//4.6+
 			mimeData = record.getMimeType();
-			//legacy -- bad coding, we're assuming it's a JPG. Sorry.
-			// mimeData = "image/jpeg";
-			if (resize == 1 && record.getWidth() > 640 && record.getHeight() > 480 || resize == 1 && record.getWidth() > 480 && record.getHeight() > 640) {
-				int width=record.getWidth()/2;
-				int height=record.getHeight()/2;
-				//4.6+
-				Bitmap tmp1 = record.getBitmap(width, height);
-				//legacy
-				// Bitmap tmp1 = record.getDecodedBitmap();
-				// Bitmap tmp2 = tmp1.scaleTo(width, height);
-				
+			
+			//check if the file is a photo or a video.
+			if (record.isImage()) {
+				//legacy -- bad coding, we're assuming it's a JPG. Sorry.
+				// mimeData = "image/jpeg";
+				if (resize == 1 && record.getWidth() > 640 && record.getHeight() > 480 || resize == 1 && record.getWidth() > 480 && record.getHeight() > 640) {
+					int width=record.getWidth()/2;
+					int height=record.getHeight()/2;
+					//4.6+
+					Bitmap tmp1 = record.getBitmap(width, height);
+					//legacy
+					// Bitmap tmp1 = record.getDecodedBitmap();
+					// Bitmap tmp2 = tmp1.scaleTo(width, height);
 
-				byte[] tmp = new byte[width * height + 1000];
-				//4.6+
-				int len = ImageCodec.encodeJPEG(tmp1, tmp, 65);
-				//legacy
-				// int len = ImageCodec.encodeJPEG(tmp2, tmp, 65);
-				photoData = new byte[len];
-				System.arraycopy(tmp, 0, photoData, 0, len);
-				photoSize = photoData.length;
+					byte[] tmp = new byte[width * height + 1000];
+					//4.6+
+					int len = ImageCodec.encodeJPEG(tmp1, tmp, 65);
+					//legacy
+					// int len = ImageCodec.encodeJPEG(tmp2, tmp, 65);
+					photoData = new byte[len];
+					System.arraycopy(tmp, 0, photoData, 0, len);
+					photoSize = photoData.length;
+				} else {
+					//4.6+
+					photoData = record.getData();
+					photoSize = record.getDataSize();
+					//legacy
+					// photoData = record.getRawBitmapData();
+					// photoSize = record.getRawBitmapDataSize();
+				}
+					isJPEG = ImageCodec.isJPEG(photoData);
+					//5.0
+					iv = new ImageView(record.getBitmap(180,145));
+					//4.6-4.7
+					// iv = new ImageView(record.getBitmap(91,74));
+					//legacy
+					// iv = new ImageView(record.getThumbnailBitmapWithHints(91,74));
+					//<5.0
+					// iv.setPosition(9,122);
+					// iv.setSize(91,74);
+					//5.0
+					iv.setPosition(10,235);
+					iv.setSize(180,145);
+					//4.6+
+					iv.setAutoScale(true,true);
+					//legacy
+					// iv.setAutoScale(true,false);
+					addChild(iv);
+					tNoImage.hide();
+					iv.show();
 			} else {
-				//4.6+
 				photoData = record.getData();
 				photoSize = record.getDataSize();
-				//legacy
-				// photoData = record.getRawBitmapData();
-				// photoSize = record.getRawBitmapDataSize();
+				// mimeData = record.getMimeType();
+				DEBUG.p("Video Name: "+photoname);
+				DEBUG.p("Video Data: "+record.getData());
+				DEBUG.p("Video Size: "+record.getDataSize());
+				// DEBUG.p("MIME Data: "+record.getMimeType());
 			}
-			isJPEG = ImageCodec.isJPEG(photoData);
-			//5.0
-			iv = new ImageView(record.getBitmap(180,145));
-			//4.6-4.7
-			// iv = new ImageView(record.getBitmap(91,74));
-			//legacy
-			// iv = new ImageView(record.getThumbnailBitmapWithHints(91,74));
-			//<5.0
-			// iv.setPosition(9,122);
-			// iv.setSize(91,74);
-			//5.0
-			iv.setPosition(10,235);
-			iv.setSize(180,145);
-			//4.6+
-			iv.setAutoScale(true,true);
-			//legacy
-			// iv.setAutoScale(true,false);
-			addChild(iv);
-			tNoImage.hide();
-			iv.show();
 			menuClear = true;
 			changeState(1);
 			setFocusedChild(bodyField);
