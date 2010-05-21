@@ -148,10 +148,6 @@ public class twitpic extends Application implements Resources, Commands {
 							"\r\n" +
 							source+"\r\n" +
 							"--AaB03x\r\n" +
-							"Content-Disposition: form-data; name=\"key\"\r\n" +
-							"\r\n" +
-							yfrogAPIKey+"\r\n" +
-							"--AaB03x\r\n" +
 							"content-disposition: form-data; name=\"media\"; filename=\""+filename+"\"\r\n" +
 							"Content-Type: "+mime+"\r\n" +
 							"\r\n").getBytes();
@@ -203,10 +199,6 @@ public class twitpic extends Application implements Resources, Commands {
 							"Content-Disposition: form-data; name=\"source\"\r\n" +
 							"\r\n" +
 							source+"\r\n" +
-							"--AaB03x\r\n" +
-	   						"Content-Disposition: form-data; name=\"key\"\r\n" +
-							"\r\n" +
-							yfrogAPIKey+"\r\n" +
 							"--AaB03x\r\n" +
 							"content-disposition: form-data; name=\"media\"; filename=\""+filename+"\"\r\n" +
 							"Content-Type: "+mime+"\r\n" +
