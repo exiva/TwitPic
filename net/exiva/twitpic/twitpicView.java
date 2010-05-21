@@ -125,11 +125,11 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 
 	public void showPhotoPicker(Boolean camera) {
 		//4.6+
-		PhotoPicker p = PhotoPicker.createPicker(true, false);
+		PhotoPicker p = PhotoPicker.createPicker(true, true);
 		//legacy
 		// PhotoPicker p = PhotoPicker.createPicker();
 		p.setMaxSelectionCount(1);
-		p.setTitle("Choose Existing Photo");
+		p.setTitle("Choose Existing Media");
 		p.setIcon(Application.getCurrentApp().getResources().getBitmap(ID_MARQUEE));
 		if (camera) {
 			p.setStartInCaptureView(true);
