@@ -292,6 +292,35 @@ public class twitpic extends Application implements Resources, Commands {
 		catch (IOException ioex) { }
 	}
 
+	public void parsetwitvidResponse(String response) {
+		try {
+			JSONObject obj = new JSONObject(response);
+			JSONObject obj2 = obj.getJSONObject("rsp");
+			DEBUG.p("stat: "+obj2.get("stat"));
+			if (obj2.getString("stat").equals("ok")) {
+				DEBUG.p("update_id: "+obj2.get("update_id"));
+				DEBUG.p("vidResponse_parent: "+obj2.get("vidResponse_parent"));
+				DEBUG.p("user_tags: "+obj2.get("user_tags"));
+				DEBUG.p("playlist_id: "+obj2.get("playlist_id"));
+				DEBUG.p("message: "+obj2.get("message"));
+				DEBUG.p("media_id: "+obj2.get("media_id"));
+				DEBUG.p("geo_longitude: "+obj2.get("geo_longitude"));
+				DEBUG.p("user_id: "+obj2.get("user_id"));
+				DEBUG.p("media_url: "+obj2.get("media_url"));
+				DEBUG.p("geo_latitude: "+obj2.get("geo_latitude"));
+				DEBUG.p("last_byte: "+obj2.get("last_byte"));
+				DEBUG.p("status_id: "+obj2.get("status_id"));
+				mWindow.clearPostWindow();
+			} else if (obj2.getString("stat").equals("fail")) {
+				JSONObject obj3 = obj2.getJSONObject("err");
+				DEBUG.p("code: "+obj3.get("code"));
+				DEBUG.p("msg: "+obj3.get("msg"));
+			}
+		} catch (JSONException e) {
+			DEBUG.p("!!Exception!! "+e);
+		}
+	}
+	
 	public void handleMessage(IPCMessage ipcmessage, int i) {
 		//4.6+
 		mWindow.showSelectedPhotos(ipcmessage.findGalleryItemIPCPayload("photo-records"));
