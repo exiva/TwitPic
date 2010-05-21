@@ -231,6 +231,51 @@ public class twitpic extends Application implements Resources, Commands {
 
 		HTTPConnection.post(host, headers, body2, (short) 0, 2);
 	}
+
+	public static void postVideo(String body, byte[] oJPEG, String filename, int size) {
+		if (body.equals("")) {
+			url = "http://twitvid.com/api/upload";
+		} else {
+			url = "http://im.twitvid.com/api/uploadAndPost";
+		}
+		source = "hiptop";
+		byte[] start = new String("--AaB03x\r\n" +
+							"Content-Disposition: form-data; name=\"token\"\r\n" +
+							"\r\n" +
+							token+"\r\n" +
+							"--AaB03x\r\n" +
+							"Content-Disposition: form-data; name=\"message\"\r\n" +
+							"\r\n" +
+							body+"\r\n" +
+							"--AaB03x\r\n" +
+							"Content-Disposition: form-data; name=\"source\"\r\n" +
+							"\r\n" +
+							source+"\r\n" +
+							"--AaB03x\r\n" +
+							"Content-Disposition: form-data; name=\"format\"\r\n" +
+							"\r\n" +
+							"json"+"\r\n" +
+							"--AaB03x\r\n" +
+							// "Content-Disposition: form-data; name=\"user_tags\"\r\n" +
+							// "\r\n" +
+							// "@exiva, @uormom"+"\r\n" +
+							// "--AaB03x\r\n" +
+							"content-disposition: form-data; name=\"media\"; filename=\""+filename+"\"\r\n" +
+							"Content-Type: video/mp4\r\n" +
+							"\r\n").getBytes();
+		byte[] end = new String("\r\n" +
+							"--AaB03x--"+"\r\n").getBytes();
+												
+		byte[] body2 = new byte[start.length + oJPEG.length + end.length];
+		System.arraycopy(start, 0, body2, 0, start.length);
+		System.arraycopy(oJPEG, 0, body2, start.length, oJPEG.length);
+		System.arraycopy(end, 0, body2, start.length + oJPEG.length, end.length);
+		
+		String headers = "Content-type: multipart/form-data, boundary=AaB03x\r\n" +
+						"Content-length: " + body2.length;
+
+		HTTPConnection.post(url, headers, body2, (short) 0, 4);
+	}
 	
 	public void parsePostResponse(String response, boolean copy) {
 		StringReader sr = new StringReader(response);
@@ -362,6 +407,12 @@ public class twitpic extends Application implements Resources, Commands {
 					mLogin.hide();
 					mLogin.stopThrobber();
 					mWindow.show();
+				}
+			}
+			//video
+			if((t.getSequenceID() == 4)) {
+				if (t.getResponse() == 200) {
+					parsetwitvidResponse(t.getString(), false);
 				}
 			}
 			t = null;
