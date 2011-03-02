@@ -8,7 +8,7 @@
 
 	<!-- Blade - T-Mo US -->
 	<property name="VERSION" value="5.0"/>
-	<property name="BUILD" value="265811" />
+	<property name="BUILD" value="270115" />
 	<!-- Shuriken - T-Mo US - Post OTA -->
 	<!-- <property name="VERSION" value="4.6"/>
 	<property name="BUILD" value="231400" /> -->

@@ -221,7 +221,7 @@ public class twitpicView extends ScreenWindow implements Resources, Commands {
 				DEBUG.p("Video Size: "+record.getDataSize());
 				// DEBUG.p("MIME Data: "+record.getMimeType());
 			} else {
-				DEBUG.p("What the hell did you feed me?");
+				DEBUG.p("This should never happen.");
 			}
 			menuClear = true;
 			changeState(1);

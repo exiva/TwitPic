@@ -509,7 +509,7 @@ dialog ID_SETTINGS
 		positionDynamically
 		resizeDynamically
 		title = "Photo Service"
-			radioButton	## <widget-options> See complete list in file header.
+			radioButton
 				title = "Twitpic"
 			radioButton
 				title = "Twitgoo"
